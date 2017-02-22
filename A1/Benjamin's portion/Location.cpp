@@ -1,22 +1,19 @@
 #include "Location.h"
 
 
-
+// Default constructor. Not used but I kept it here in case it is needed.
 Location::Location()
 {
 }
 
+// Real constructor that should be used.
 Location::Location(const string name, const int region)
 {
 	this->name = name;
 	this->region = region;
 }
 
-
-Location::~Location()
-{
-}
-
+// Setters and getters
 string Location::getName()
 {
 	return name;
@@ -37,6 +34,7 @@ void Location::setRegion(const int region)
 	this->region = region;
 }
 
+// Used for debug and demo.
 void Location::displayInfo()
 {
 	string temp;

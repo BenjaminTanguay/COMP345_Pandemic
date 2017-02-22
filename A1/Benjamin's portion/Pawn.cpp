@@ -8,11 +8,7 @@ Pawn::Pawn(const string color, const City & origin)
 	this->color = color;
 }
 
-
-Pawn::~Pawn()
-{
-}
-
+// Getters and setters
 City & Pawn::getCity()
 {
 	return city;
@@ -33,6 +29,7 @@ void Pawn::setColor(const string color)
 	this->color = color;
 }
 
+// Used for demonstration and debug
 void Pawn::displayInfo()
 {
 	cout << "Pawn color: " << color << endl
