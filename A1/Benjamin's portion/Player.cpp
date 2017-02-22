@@ -1,28 +1,33 @@
 #include "Player.h"
 
+// Helper method to shuffle the roles. May migrate class in subsequent iteration.
+int random(int i)
+{
+	return std::rand() % i;
+}
 
-
+// Assigns basic values to the player. Shuffles the roles. Eventually, the role assignation portion should be
+// given to a factory method that will create subclasses (Medic, Researcher, etc) based on a random seed.
 Player::Player(string name, string color, const City & origin)
 {
+	std::srand(unsigned(std::time(0)));
 	static int numberOfPlayers = 0;
 	++numberOfPlayers;
-	static int array[7];
+	static vector<int> array;
 	if (numberOfPlayers == 1) {
-		for (int i = 0; i < 7; ++i) {
-			array[i] = i + 1;
+		for (unsigned i = 1; i < 8; ++i) {
+			array.push_back(i);
 		}
-		shuffle(array, 7);
 	}
+	random_shuffle(array.begin(), array.end(), random);
 	this->playerName = name;
 	playerId = numberOfPlayers;
-	playerRole = array[playerId - 1];
+	playerRole = array.at(0);
+	array.erase(array.begin());
 	actionPoints = 4;
 	hand = new map<pair<int, string>, Card>;
 	pawn = new Pawn(color, origin);
 }
-
-
-
 
 Player::~Player()
 {
@@ -32,6 +37,7 @@ Player::~Player()
 	hand = NULL;
 }
 
+// Different default actions a player can have. To be implemented in subsequent interation.
 void Player::move(const City & city)
 {
 }
@@ -61,6 +67,7 @@ void Player::discoverCure(const Card & card1, const Card & card2, const Card & c
 }
 
 
+// Used to 
 void Player::displayInfo()
 {
 	string temp;
@@ -94,24 +101,10 @@ void Player::displayInfo()
 	cout << "Player #" << playerId << endl << endl
 		<< "Player name: " << playerName << endl
 		<< "Number of actions left: " << actionPoints << endl
-		<< "Player role: " << temp << endl;
+		<< "Player role: " << temp << endl
+		<< "Reference cards, role card and player cards: to be implemented by teammates." << endl;
 	pawn->displayInfo();
 	cout << endl << endl;
 
 }
 
-
-
-
-void Player::shuffle(int array[], int length)
-{
-	int temp;
-	for (int i = 0; i < length - 2; ++i) {
-		temp = array[i];
-		std::default_random_engine generator;
-		std::uniform_int_distribution<int> distribution(i, length - 1);
-		int j = distribution(generator);
-		array[i] = array[j];
-		array[j] = temp;
-	}
-}
