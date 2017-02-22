@@ -12,7 +12,7 @@ class Action {
 			this->title = title;
 		}
 
-		Action() {};
+		Action();
 
 		std::string getTitle() {
 			return this->title;
@@ -22,9 +22,9 @@ class Action {
 			return this->description;
 		}
 
-		virtual bool costAction(Action& a) {}
+		virtual bool costAction(Action& a);
 
-		virtual void doAction() {}
+		virtual void doAction();
 		
 };
 

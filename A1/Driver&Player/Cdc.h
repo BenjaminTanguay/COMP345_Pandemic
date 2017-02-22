@@ -3,18 +3,45 @@
 #include "Action.h"
 #include "ReferenceCard.h"
 #include "RoleCard.h"
+#include "Player.h"
 
 class Cdc {
 	private:
+		int numP;
+		const int maxP = 4;
+		Player plist[];
 
 	public:
-		bool costAction(Action& action) {}
+		void setNumP(int i) {
+			if (i < maxP)
+				this->numP = i + 1;
+			else
+				this->numP = 2;
+			this->plist[numP];
+		}
 
-		void doAction() {}
+		int getNumP() {
+			return this->numP;
+		}
 
-		bool costRole() {}
+		void setPList(int i, Player p) {
+			this->plist[i] = p;
+		}
 
-		void doRole() {}
+		Player getPList(int i) {
+			return this->plist[i];
+		}
 
-		void run() {}
+		bool costAction(Action& action);
+
+		void doAction();
+
+		bool costRole();
+
+		void doRole();
+
+		bool setup();
+
+		void run();
+
 };

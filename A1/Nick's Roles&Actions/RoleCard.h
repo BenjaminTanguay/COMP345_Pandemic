@@ -3,27 +3,23 @@
 #include <string>
 #include <iostream>
 
-#include "Role.h"
+//#include "Role.h"
 //#include "EventCard.h"
 
 class RoleCard {
 	protected:
 		std::string name;
 		std::string description;
-		Action role;
-
+		
 	public:
-		bool costRole() {}
-
-		void doRole() {}
 
 		RoleCard(std::string) {
 			this->name = name;
 		}
 
-		RoleCard() {};
+		RoleCard();
 
-		std::string getname() {
+		std::string getName() {
 			return this->name;
 		}
 
@@ -32,10 +28,12 @@ class RoleCard {
 		}
 
 		std::string getRole() {
-			return this->role.getTitle() + "\n" + this->role.getDescription();
+			return this->getName() + "\n" + this->getDescription();
 		}
 
+		virtual bool costRole(RoleCard& role);
 
+		virtual void doRole();
 
 };
 
