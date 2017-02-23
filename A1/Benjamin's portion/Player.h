@@ -8,8 +8,8 @@
 #include "Pawn.h"
 #include "City.h"
 #include <algorithm>
-#include <ctime> 
-#include <cstdlib> 
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -54,6 +54,9 @@ public:
 	// Relevant constructor. It mostly relays the info to the pawn object.
 	Player(string name, string color, const City & origin);
 	~Player();
+
+	// Here to allow o forcefully set a different city to the pawn without the move command.
+	void setLocation(City * city);
 
 	// The different actions the player can have. Will need to be implemented in a subsequent iteration.
 	void move(const City & city); // Regular movement

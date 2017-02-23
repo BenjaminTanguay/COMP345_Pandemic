@@ -16,6 +16,9 @@ void Session::setOrigin(string cityName)
 	this->origin->setResearchCenter(false);
 	this->origin = this->playMap->at(cityName);
 	this->origin->setResearchCenter(true);
+	for (unsigned i = 0; i < this->players->size(); ++i) {
+		this->players->at(i)->setLocation(this->playMap->at(cityName));
+	}
 }
 
 Session::Session(City * origin)
@@ -72,6 +75,36 @@ void Session::setPlayerPhase(int const phase)
 void Session::clearPlayMap()
 {
 	this->playMap->clear();
+	// The players needs to point to a city. If there is no city, there can be no player.
+	this->clearPlayers();
+}
+
+void Session::clearPlayers()
+{
+	this->players->clear();
+}
+
+void Session::addResearchCenter(string city)
+{
+	this->playMap->at(city)->setResearchCenter(true);
+}
+
+void Session::savePlayMap(string fileName)
+{
+	{
+		ofstream outputStream(fileName);
+		boost::archive::text_oarchive archive(outputStream);
+		archive << *this;
+	}
+}
+
+void Session::loadPlayMap(string fileName)
+{
+	{
+		ifstream inputStream(fileName);
+		boost::archive::text_iarchive unarchive(inputStream);
+		unarchive >> *this;
+	}
 }
 
 void Session::addLocation(const string name, const int region)

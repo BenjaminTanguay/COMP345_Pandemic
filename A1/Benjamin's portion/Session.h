@@ -28,7 +28,6 @@ private:
 	{
 		ar & origin;
 		ar & playMap;
-		ar & this->playerTurn;
 	}
 
 	// The collection of locations available in the game. Useful to create the decks of cards and the cities.
@@ -70,6 +69,10 @@ public:
 	void connectCity(string city1, string city2);
 	void setOrigin(string cityName);
 	void clearPlayMap();
+	void clearPlayers();
+	void addResearchCenter(string city);
+	void savePlayMap(string fileName);
+	void loadPlayMap(string fileName);
 
 };
 

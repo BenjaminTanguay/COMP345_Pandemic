@@ -43,6 +43,9 @@ private:
 	int blackDisease;
 	int redDisease;
 
+	// Used to test if a city is already connected to another city.
+	bool contains(City * city);
+
 public:
 
 	// Different constructors to handle different cases (ex: debug). Normally, only the one with location and research should be used.
@@ -55,6 +58,9 @@ public:
 
 	// Method to connect two cities. Uses pointers.
 	void connect(City * city);
+
+	// Method to remove a connection between two cities. Uses pointers. Used for demonstration and debug purposes.
+	void disconnect(City * city);
 
 	// Unused atm. May be removed in the next iteration. Gives a lot of power.
 	unordered_map<string, City *> * getConnections();
