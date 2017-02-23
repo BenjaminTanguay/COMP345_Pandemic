@@ -46,7 +46,7 @@ class ReferenceCard {
 			else 
 				for (std::vector<Action>::iterator it = list.begin(); it < list.end(); it++) {
 					Action action = *it;
-					std::cout << "Reference Card" << &action.getTitle() << &action.getDescription() << std::endl;
+					std::cout << action.getTitle() << action.getDescription() << std::endl;
 				}
 					
 		}

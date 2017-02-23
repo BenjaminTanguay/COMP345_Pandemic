@@ -17,7 +17,7 @@ class RoleCard {
 			this->name = name;
 		}
 
-		RoleCard();
+		RoleCard() {};
 
 		std::string getName() {
 			return this->name;
@@ -31,9 +31,10 @@ class RoleCard {
 			return this->getName() + "\n" + this->getDescription();
 		}
 
-		virtual bool costRole(RoleCard& role);
 
-		virtual void doRole();
+		virtual bool costRole(RoleCard& role) { return true; }
+
+		//virtual void doRole();
 
 };
 
@@ -48,6 +49,7 @@ class ContigencyPlanner : public RoleCard {
 				"hand limit.\n"
 				"When the Contingency Planner plays the Event card on his role card,\n"
 				"remove this Event card from the game(instead of discarding i";
+			std::cout << this->getRole()<< std::endl;
 		}
 
 };
@@ -61,6 +63,7 @@ public:
 			"without discarding(or using) a City card, or \n"
 			"• once per turn, move from a research station to any city\n"
 			"by discarding any City card.";
+		std::cout << this->getRole() << std::endl;
 	}
 
 };
@@ -72,8 +75,9 @@ public:
 		this->description = "The Dispatcher may, as an action, either:\n"
 			"• move any pawn, if its owner agrees, to any city\n"
 			"containing another pawn, or \n"
-			"• move another player’s pawn, if its owner agrees,\n"
+			"• move another players pawn, if its owner agrees,\n"
 			"as if it were his own, discarding your own cards.";
+		std::cout << this->getRole() << std::endl;
 	}
 
 };
@@ -86,6 +90,7 @@ public:
 			"the placement of disease cubes in the city she is in\n"
 			"and all cities connected to that city.She does not affect\n"
 			"cubes placed during setup.";
+		std::cout << this->getRole() << std::endl;
 	}
 
 };
@@ -97,8 +102,9 @@ public:
 		this->description = "As an action, the Researcher may give any City card from\n"
 			"her hand to another player in the same city as her, without\n"
 			"this card having to match her city.The transfer must be\n"
-			"from her hand to the other player’s hand, but it can occur\n"
-			"on either player’s turn.";
+			"from her hand to the other players hand, but it can occur\n"
+			"on either player's turn.";
+		std::cout << this->getRole() << std::endl;
 	}
 
 };
@@ -111,8 +117,9 @@ public:
 			"when doing the Treat Disease action.\n"
 			"If a disease has been cured, he automatically removes\n"
 			"all cubes of that color from a city, simply by entering it\n"
-			"or being there.This does not take an action. The Medic’s automatic removal of cubes can occur on other players’\n"
+			"or being there.This does not take an action. The Medics automatic removal of cubes can occur on other players'\n"
 			"turns, if he is moved by the Dispatcher or the Airlift Event";
+		std::cout << this->getRole() << std::endl;
 	}
 
 };
@@ -124,6 +131,7 @@ public:
 		this->description = "he Scientist needs only 4 (not 5) City cards of\n"
 			"the same disease color to Discover a Cure for that\n"
 			"disease.";
+		std::cout << this->getRole() << std::endl;
 	}
 
 };
