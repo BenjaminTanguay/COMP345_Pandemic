@@ -4,6 +4,22 @@ using namespace std;
 // Assigning the static variable for the class.
 vector<City *> * City::researchCities = new vector<City *>;
  
+bool City::contains(City * city)
+{
+	if (this->connections->size() != 0) {
+		if (this->connections->find(city->getName()) == this->connections->end()) {
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
 // Here for the future if we want to use it.
 City::City()
 {
@@ -42,6 +58,14 @@ void City::connect(City * city)
 	}
 }
 
+void City::disconnect(City * city)
+{
+	if (this->contains(city)) {
+		this->connections->at(city->getName())->connections->erase(this->getName());
+		this->connections->erase(city->getName());
+	}
+}
+
 // Returns the city's map of connections.
 unordered_map<string, City *> * City::getConnections()
 {
@@ -63,15 +87,23 @@ string City::getName()
 //Used to make sure a city that gets a research center built gets the proper connections.
 void City::setResearchCenter(const bool research)
 {
+	bool temp = this->researchCenter;
 	this->researchCenter = research;
 	// If there is a research center built, we loop through the cities with a research center and connect them to this new city. Then we add the new city to the list of research center cities.
-	if (research) {
+	if (research && !temp) {
 		if (this->researchCities->size() > 0) {
 			for (unsigned i = 0; i < this->researchCities->size(); ++i) {
 				this->connect(this->researchCities->at(i));
 			}
 		}
 		this->researchCities->push_back(this);
+	}
+	else if (!research && temp) {
+		for (unsigned i = 0; i < researchCities->size(); ++i) {
+			if (researchCities->at(i) == this) {
+				researchCities->erase(researchCities->begin() + i);
+			}
+		}
 	}
 }
 

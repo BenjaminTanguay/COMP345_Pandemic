@@ -11,7 +11,7 @@ int random(int i)
 Player::Player(string name, string color, const City & origin)
 {
 	std::srand(unsigned(std::time(0)));
-	static int numberOfPlayers = 0;
+	static int numberOfPlayers;
 	++numberOfPlayers;
 	static vector<int> array;
 	if (numberOfPlayers == 1) {
@@ -35,6 +35,13 @@ Player::~Player()
 	pawn = NULL;
 	delete hand;
 	hand = NULL;
+}
+
+// Here to allow to forcefully set a different city without the move command.
+void Player::setLocation(City * city)
+{
+	City & cityRef = *city;
+	this->pawn->setCity(cityRef);
 }
 
 // Different default actions a player can have. To be implemented in subsequent interation.
