@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <unordered_map>
+#include "GameStateVar.h"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/unordered_map.hpp>
@@ -31,11 +32,10 @@ private:
 	// Points to other cities connected to this one. Unordered_map for O(1) operations on query.
 	unordered_map<string, City *> * connections;
 
+	unordered_map<string, City *> * researchConnections;
+
 	// Is there a research center in the city.
 	bool researchCenter;
-	
-	// Total amount of cubes on the city (useful when infecting)
-	int disease;
 
 	// Breakdown of the different diseases in town (useful for curing)
 	int blueDisease;
@@ -44,26 +44,36 @@ private:
 	int redDisease;
 
 	// Used to test if a city is already connected to another city.
-	bool contains(City * city);
+	bool contains(City * city, int connection);
+
+	unordered_map<string, City *> * getLocalConnections(int connection);
+	unordered_map<string, City *> * getForeignConnections(City * city, int connection);
+
+
 
 public:
+
+	// For internal use to differenciate between the regular connection unordered_map and the research connection unordered_map
+	static const int REGULAR_CONNECTION = 1;
+	static const int RESEARCH_CONNECTION = 2;
 
 	// Different constructors to handle different cases (ex: debug). Normally, only the one with location and research should be used.
 	City();
 	City(Location * location, const bool research);
 	City(Location * location, unordered_map<string, City *> * connections, const bool research);
-	City(Location * location, unordered_map<string, City *> * connections, int disease, int blueDisease, int yellowDisease, int blackDisease,
+	City(Location * location, unordered_map<string, City *> * connections, int blueDisease, int yellowDisease, int blackDisease,
 		int redDisease, const bool research);
 	~City();
 
 	// Method to connect two cities. Uses pointers.
-	void connect(City * city);
+	void connect(City * city, int connection);
 
 	// Method to remove a connection between two cities. Uses pointers. Used for demonstration and debug purposes.
-	void disconnect(City * city);
+	void disconnect(City * city, int connection);
 
 	// Unused atm. May be removed in the next iteration. Gives a lot of power.
 	unordered_map<string, City *> * getConnections();
+	unordered_map<string, City *> * getResearchConnections();
 
 	// Returns the pointer to the location object attached to the city (name and region).
 	Location * getLocation();
@@ -74,9 +84,6 @@ public:
 	// Setters and getters
 	void setResearchCenter(const bool research);
 	bool getResearchCenter();
-	
-	void setDisease(const int disease);
-	int getDisease();
 
 	void setBlueDisease(const int disease);
 	int getBlueDisease();
@@ -90,8 +97,12 @@ public:
 	void setRedDisease(const int disease);
 	int getRedDisease();
 
+	bool incrementDisease(int color);
+
 	// Used to demo the city object.
 	void displayInfo();
+
+	bool infect(unordered_map<string, City *> * city, int color);
 
 };
 // Here for serialization purpose.
@@ -100,11 +111,11 @@ inline void City::serialize(Archive & ar, const unsigned int version)
 {
 	ar & location;
 	ar & researchCenter;
-	ar & disease;
 	ar & blueDisease;
 	ar & yellowDisease;
 	ar & blackDisease;
 	ar & redDisease;
 	ar & connections;
 	ar & researchCities;
+	ar & researchConnections;
 }
