@@ -271,6 +271,9 @@ bool City::infect(unordered_map<string, City *> * city, int color)
 
 		// ECLOSION CODE
 		else {
+
+			// Since we have an eclosion, we call the incrementInclosion method of the GameStateVar class.
+			gameState->incrementEclosion();
 			// First we put our city in the hashmap passed as a param. The idea is that we don't two cities to keep triggering each other.
 			// Once a city has had an eclosion, it is immune from the chain effect.
 			city->emplace(this->getName(), this);
