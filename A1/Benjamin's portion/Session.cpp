@@ -127,7 +127,7 @@ void Session::clearLocation()
 
 void Session::connectCity(string city1, string city2)
 {
-	this->playMap->at(city1)->connect(this->playMap->at(city2));
+	this->playMap->at(city1)->connect(this->playMap->at(city2), City::REGULAR_CONNECTION);
 }
 
 void Session::addPlayer(string name, string color)

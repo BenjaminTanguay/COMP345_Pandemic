@@ -3,6 +3,8 @@ class Card
 {
 public:
 	Card();
-	~Card();
+	virtual ~Card();
+
+	virtual void read() = 0;
 };
 

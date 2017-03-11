@@ -10,3 +10,7 @@ Card::Card()
 Card::~Card()
 {
 }
+
+void Card::read()
+{
+}

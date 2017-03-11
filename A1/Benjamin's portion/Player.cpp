@@ -25,7 +25,7 @@ Player::Player(string name, string color, const City & origin)
 	playerRole = array.at(0);
 	array.erase(array.begin());
 	actionPoints = 4;
-	hand = new map<pair<int, string>, Card>;
+	//hand = new map<pair<int, string>, Card>;
 	pawn = new Pawn(color, origin);
 }
 
@@ -33,8 +33,8 @@ Player::~Player()
 {
 	delete pawn;
 	pawn = NULL;
-	delete hand;
-	hand = NULL;
+	//delete hand;
+	//hand = NULL;
 }
 
 // Here to allow to forcefully set a different city without the move command.

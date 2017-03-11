@@ -24,7 +24,7 @@ private:
 
 	// To implement. Map was chosen because ordered iteration could be useful to represent the hand in the console or a GUI.
 	// Ideally, will order by region and then by alphabetical order.
-	map<pair<int, string>, Card> * hand;
+	// map<pair<int, string>, Card> * hand;
 
 	// Number of actions can do;
 	int actionPoints;
@@ -36,8 +36,8 @@ private:
 	Pawn * pawn;
 
 	// To implement
-	Card roleCard;
-	Card referenceCard;
+	// Card roleCard;
+	// Card referenceCard;
 
 public:
 	// The roles are represented numerically to allow for easier arithmetic comparaison.
