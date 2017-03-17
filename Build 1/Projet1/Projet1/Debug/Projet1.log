@@ -1,0 +1,69 @@
+﻿  Player.cpp
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(30): error C2143: erreur de syntaxe : absence de ';' avant '*'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(30): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(30): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(31): error C2143: erreur de syntaxe : absence de ';' avant '<'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(31): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(31): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(32): error C2143: erreur de syntaxe : absence de ';' avant '<'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(32): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(32): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(33): error C2143: erreur de syntaxe : absence de ';' avant '<'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(33): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(33): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(44): error C2061: erreur de syntaxe : identificateur 'City'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(45): error C2535: 'Session::Session(void)' : fonction membre déjà définie ou déclarée
+  c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(44): note: voir la déclaration de 'Session::Session'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(46): error C2143: erreur de syntaxe : absence de ';' avant '<'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(46): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(46): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(47): error C2143: erreur de syntaxe : absence de ';' avant '<'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(47): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(47): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(50): error C2143: erreur de syntaxe : absence de ';' avant '*'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(50): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(50): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(51): error C2143: erreur de syntaxe : absence de ';' avant '<'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(51): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(51): error C2238: jetons inattendus avant ';'
+  Pawn.cpp
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\player.h(16): error C2061: erreur de syntaxe : identificateur 'City'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\player.h(18): error C2061: erreur de syntaxe : identificateur 'City'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\player.h(18): error C2535: 'void Player::move(Card *)' : fonction membre déjà définie ou déclarée
+  c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\player.h(17): note: voir la déclaration de 'Player::move'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\player.h(29): error C2143: erreur de syntaxe : absence de ';' avant '*'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\player.h(29): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\player.h(29): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(30): error C2143: erreur de syntaxe : absence de ';' avant '*'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(30): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(30): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(31): error C2065: 'City' : identificateur non déclaré
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(31): error C2923: 'std::unordered_map' : 'City' n'est pas un argument de type modèle valide pour le paramètre '_Ty'
+c:\program files (x86)\microsoft visual studio 14.0\vc\include\unordered_map(82): error C3203: 'pair' : la classe modèle non spécialisée ne peut pas être utilisée comme argument modèle pour le paramètre modèle '_Ty' ; type réel attendu
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(32): error C2065: 'Location' : identificateur non déclaré
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(32): error C2923: 'std::vector' : 'Location' n'est pas un argument de type modèle valide pour le paramètre '_Ty'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(32): error C3203: 'allocator' : la classe modèle non spécialisée ne peut pas être utilisée comme argument modèle pour le paramètre modèle '_Alloc' ; type réel attendu
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(44): error C2061: erreur de syntaxe : identificateur 'City'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(45): error C2535: 'Session::Session(void)' : fonction membre déjà définie ou déclarée
+  c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(44): note: voir la déclaration de 'Session::Session'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(46): error C2065: 'Location' : identificateur non déclaré
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(46): error C2923: 'std::vector' : 'Location' n'est pas un argument de type modèle valide pour le paramètre '_Ty'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(46): error C3203: 'allocator' : la classe modèle non spécialisée ne peut pas être utilisée comme argument modèle pour le paramètre modèle '_Alloc' ; type réel attendu
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(50): error C2143: erreur de syntaxe : absence de ';' avant '*'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(50): error C4430: spécificateur de type manquant - int est pris en compte par défaut. Remarque : C++ ne prend pas en charge int par défaut
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(50): error C2238: jetons inattendus avant ';'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(51): error C2065: 'City' : identificateur non déclaré
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(51): error C2923: 'std::unordered_map' : 'City' n'est pas un argument de type modèle valide pour le paramètre '_Ty'
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\pawn.cpp(8): error C2039: 'getOrigin' : n'est pas membre de 'Session'
+  c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.h(12): note: voir la déclaration de 'Session'
+  Location.cpp
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\location.cpp : fatal error C1041: impossible d'ouvrir la base de données du programme 'C:\Users\Benjamin\Dropbox\Concordia\Passe\2017 Printemps\C++\Pandemic Project\Projet1\Projet1\Debug\vc140.pdb' ; si plusieurs CL.EXE écrivent dans le même fichier .PDB, utilisez /FS.
+  City.cpp
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\city.cpp : fatal error C1041: impossible d'ouvrir la base de données du programme 'C:\Users\Benjamin\Dropbox\Concordia\Passe\2017 Printemps\C++\Pandemic Project\Projet1\Projet1\Debug\vc140.pdb' ; si plusieurs CL.EXE écrivent dans le même fichier .PDB, utilisez /FS.
+  Card.cpp
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\card.cpp : fatal error C1041: impossible d'ouvrir la base de données du programme 'C:\Users\Benjamin\Dropbox\Concordia\Passe\2017 Printemps\C++\Pandemic Project\Projet1\Projet1\Debug\vc140.pdb' ; si plusieurs CL.EXE écrivent dans le même fichier .PDB, utilisez /FS.
+  Génération de code en cours...
+  Compilation en cours...
+  Session.cpp
+c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic project\projet1\projet1\session.cpp : fatal error C1041: impossible d'ouvrir la base de données du programme 'C:\Users\Benjamin\Dropbox\Concordia\Passe\2017 Printemps\C++\Pandemic Project\Projet1\Projet1\Debug\vc140.pdb' ; si plusieurs CL.EXE écrivent dans le même fichier .PDB, utilisez /FS.
+  Génération de code en cours...
