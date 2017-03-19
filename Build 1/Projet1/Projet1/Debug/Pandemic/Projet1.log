@@ -1,6 +1,0 @@
-﻿  Display.cpp
-c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic local\projet1\projet1\display.cpp(720): warning C4018: '<': signed/unsigned mismatch
-c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic local\projet1\projet1\display.cpp(760): warning C4018: '<': signed/unsigned mismatch
-c:\users\benjamin\dropbox\concordia\passe\2017 printemps\c++\pandemic local\projet1\projet1\display.cpp(800): warning C4018: '<': signed/unsigned mismatch
-  Projet1.vcxproj -> C:\Users\Benjamin\Dropbox\Concordia\Passe\2017 Printemps\C++\Pandemic Local\Projet1\Debug\Pandemic.exe
-  Projet1.vcxproj -> C:\Users\Benjamin\Dropbox\Concordia\Passe\2017 Printemps\C++\Pandemic Local\Projet1\Debug\Pandemic.pdb (Partial PDB)
