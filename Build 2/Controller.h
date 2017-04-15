@@ -1,28 +1,52 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "City.h"
+#include "Player.h"
+#include "Display.h"
 
 using namespace std;
 class Controller
 {
+private:
+	Display * display;
+
+	const enum load {
+		map = 1,
+		game = 2
+	};
+
+	void regularMapInitialization();
+	
+	void diseaseModification(int region, vector<string>* log, int lineCount, City * currentCity);
+	void loadFileDialog(int mapOrGame);
+	void saveFileDialog(int mapOrGame);
+	void gameInstantiation();
+	void playEventCards();
+	void handSizeCheck(Player * player);
+	Card * cardSelection(Player * player, string message);
+	void eventCardPrompt();
+	void playEventCardOrDiscard(Player * player);
+
 public:
 	Controller();
 	~Controller();
 
-
-
-	// initialize
-	// - create players
-	// - create / load map
-	// - modify map
-	// - initialize hands
-	// - initialize infections
-
-	// 
-
-
-
-
-	//static void readLog(vector<string> * log);
+	static int inputCheck(int lowerBound, int upperBound);
+	void welcomeSceen();
+	void newGameScreen();
+	void mapEditorGeneralDialog();
+	void mapEditorCreateModifyDialog();
+	void mapEditorParametersDialog(string city);
+	void gameLoop();
+	void playerMove();
+	void driveFerry();
+	void directFlight();
+	void charterFlight();
+	void shuttleFlight();
+	void treatDisease();
+	void shareKnowledge();
+	void discoverCure();
 };
 
+bool isInteger(const std::string & s);

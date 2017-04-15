@@ -1,4 +1,5 @@
 #include "ConsoleFormat.h"
+#include "Session.h"
 
 HANDLE ConsoleFormat::hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -105,6 +106,7 @@ void ConsoleFormat::setColor(int region) {
 
 int ConsoleFormat::printLineOfText(string text)
 {
+	Session::getInstance().getLog()->stringToLog(text);
 	int numberOfChars = 0;
 
 	numberOfChars += printWall();

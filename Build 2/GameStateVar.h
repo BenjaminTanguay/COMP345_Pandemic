@@ -2,6 +2,8 @@
 #include "Singleton.h"
 #include <vector>
 #include <string>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 
 using namespace std;
@@ -9,6 +11,31 @@ using namespace std;
 class GameStateVar
 {
 private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	inline void GameStateVar::serialize(Archive & ar, const unsigned int version)
+	{
+		ar & blue;
+		ar & yellow;
+		ar & black;
+		ar & red;
+		ar & blueCure;
+		ar & yellowCure;
+		ar & blackCure;
+		ar & redCure;
+		ar & blueEradicated;
+		ar & yellowEradicated;
+		ar & blackEradicated;
+		ar & redEradicated;
+		ar & oneQuietNight;
+		ar & eclosionCounter;
+		ar & researchCenterCounter;
+		ar & infectionRate;
+		ar & infectionCounter;
+	}
+
+
+
 	int blue;
 	int yellow;
 	int black;

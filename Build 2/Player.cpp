@@ -96,7 +96,7 @@ string Player::move(CityCard * card)
 	City * city = PlayMap::getInstance()->getPlayMap()->at(card->getLocation());
 	city->setPlayer(playerId - 1, true);
 	this->pawn->setCity(city);
-	playCardFromHand(card);
+	discardCard(card);
 	string data = playerName + " moved from " + cityName + " to city: " + city->getName();
 	city = nullptr;
 	return data;
@@ -115,7 +115,7 @@ string Player::move(CityCard * card, City * city)
 	this->getCity()->setPlayer(playerId - 1, false);
 	city->setPlayer(playerId - 1, true);
 	this->pawn->setCity(city);
-	playCardFromHand(card);
+	discardCard(card);
 	return playerName + " chartered a flight to move from " + cityName + " to city: " + city->getName();
 }
 
@@ -137,7 +137,7 @@ string Player::build(CityCard * card)
 	}
 	--actionPoints;
 	getCity()->setResearchCenter(true);
-	playCardFromHand(card);
+	discardCard(card);
 	return "Research center constructed in " + getCity()->getName();
 
 }
@@ -198,11 +198,11 @@ string Player::discoverCure(CityCard * card1, CityCard * card2, CityCard * card3
 		== card4->getLocation()->getRegion()
 		== card5->getLocation()->getRegion()) {
 		--actionPoints;
-		playCardFromHand(card1);
-		playCardFromHand(card2);
-		playCardFromHand(card3);
-		playCardFromHand(card4);
-		playCardFromHand(card5);
+		discardCard(card1);
+		discardCard(card2);
+		discardCard(card3);
+		discardCard(card4);
+		discardCard(card5);
 		GameStateVar::getInstance().setCure(card1->getLocation()->getRegion());
 		return getCity()->diseaseTranslate(card1->getLocation()->getRegion()) + " cured!";
 	}
@@ -289,11 +289,6 @@ bool Player::handContains(Card * card)
 	return false;
 }
 
-void Player::playCardFromHand(Card * card) {
-	hand->erase(card);
-	Session::getInstance().getPlayerDeck()->toDiscard(card);
-}
-
 int Player::getRole()
 {
 	return playerRole;
@@ -307,6 +302,11 @@ RoleCard * Player::getRoleCard()
 void Player::refreshActions()
 {
 	actionPoints = 4;
+}
+
+inline void Player::discardCard(Card * card) {
+	hand->erase(card);
+	Session::getInstance().getPlayerDeck()->toDiscard(card);
 }
 
 

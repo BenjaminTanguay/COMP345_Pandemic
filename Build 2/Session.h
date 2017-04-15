@@ -16,9 +16,12 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/unordered_map.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/tracking.hpp>
 #include "PlayMap.h"
 #include "Subject.h"
 #include "RoleCard.h"
+#include "Log.h"
 
 class Player;
 class PlayerDeck;
@@ -29,15 +32,24 @@ class Session : public Subject
 {
 private:
 
-	// Here for serialization purpose. For this iteraiton, we only want to serialize the play map. Eventually, we may rework it so that the whole session is saved/restored.
-/*
 	friend class boost::serialization::access;
 	template<class Archive>
-	inline void Session::serialize(Archive & ar, const unsigned int version)
+	inline void serialize(Archive & ar, const unsigned int version)
 	{
-
+		ar & cityCards;
+		ar & eventCards;
+		ar & locations;
+		ar & numberOfLocationsPerRegion;
+		ar & playMap;
+		ar & playerDeck;
+		ar & infectionDeck;
+		ar & numberOfRegionsInPlay;
+		ar & currentPlayer;
+		ar & playerTurn;
+		ar & playerPhase;
+		ar & difficultyLevel;
+		ar & log;
 	}
-	*/
 
 
 	// The collection of locations available in the game. Useful to create the decks of cards and the cities.
@@ -47,7 +59,7 @@ private:
 
 	unordered_map<string, EventCard *> * eventCards;
 
-	vector<int> * numberOfLocationsPerRegion;
+	int numberOfLocationsPerRegion[4];
 
 	// The different players in the game.
 	vector<Player *> * players;
@@ -61,6 +73,8 @@ private:
 
 	PlayerDeck * playerDeck;
 	InfectionDeck * infectionDeck;
+
+	Log * log;
 
 	// State of the game. More variables will be added here.
 	int playerTurn;
@@ -105,6 +119,8 @@ public:
 	void addResearchCenter(Location * city);
 	bool savePlayMap(string fileName);
 	bool loadPlayMap(string fileName);
+	bool saveSession(string fileName);
+	bool loadSession(string fileName);
 	InfectionDeck * getInfectionDeck();
 	PlayerDeck * getPlayerDeck();
 	CityCard * getCityCards(string name);
@@ -140,7 +156,11 @@ public:
 	int getNumberOfRegionInPlay();
 	int getNumberOfLocations(int region);
 
+	Log * getLog();
+
 
 };
+
+BOOST_CLASS_TRACKING(Session, boost::serialization::track_always)
 
 

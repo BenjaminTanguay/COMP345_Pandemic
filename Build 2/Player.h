@@ -17,6 +17,9 @@
 #include "ReferenceCard.h"
 #include "RoleCard.h"
 #include <random>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/set.hpp>
 
 
 using namespace std;
@@ -53,6 +56,28 @@ struct compareSet {
 class Player
 {
 private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	inline void Player::serialize(Archive & ar, const unsigned int version)
+	{
+		ar & playerName;
+		ar & playerId;
+		ar & actionPoints;
+		ar & playerRole;
+		ar & pawn;
+		ar & hand;
+		ar & roleCard;
+		ar & referenceCard;
+		//ar & CONTINGENCY_PLANNER;
+		//ar & OPERATION_EXPERT;
+		//ar & DISPATCHER;
+		//ar & QUARANTINE_SPECIALIST;
+		//ar & RESEARCHER;
+		//ar & MEDIC;
+		//ar & SCIENTIST;
+	}
+
+
 	string playerName;
 	int playerId;
 
@@ -124,7 +149,7 @@ public:
 	bool handContains(Card * card);
 
 	void refreshActions();
-	void playCardFromHand(Card * card);
+	void discardCard(Card * card);
 
 	// Temporary for demonstration.
 	int getRole();

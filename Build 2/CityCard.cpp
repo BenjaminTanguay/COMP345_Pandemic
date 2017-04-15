@@ -1,7 +1,11 @@
 #include "CityCard.h"
 
 
-CityCard::CityCard (Location * location) : location(location) {};
+CityCard::CityCard (Location * location) : location(location) {}
+CityCard::CityCard()
+{
+}
+;
 
 CityCard::~CityCard()
 {

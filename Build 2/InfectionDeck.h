@@ -5,11 +5,23 @@
 #include "Deck.h"
 #include "GameStateVar.h"
 #include <random>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
 
 using namespace std;
 
 class InfectionDeck : public Deck
 {
+private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & this->discard;
+		ar & this->deck;
+	}
+
 public:
 	InfectionDeck();
 	~InfectionDeck();
