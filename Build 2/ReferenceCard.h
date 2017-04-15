@@ -10,13 +10,25 @@ this is a generic card given to each player -it is the same for all
 
 #include "Card.h"
 #include "Action.h"
-
 #include <vector>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
 
 class ReferenceCard 
 	: public Card {
 
 private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	inline void ReferenceCard::serialize(Archive & ar, const unsigned int version)
+	{
+		ar & name;
+		ar & description;
+	}
+
+
+
 	std::vector<Action *> * list;
 	std::vector<Action> copy;
 

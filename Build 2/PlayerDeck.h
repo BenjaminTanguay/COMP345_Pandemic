@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <random>
 #include "Session.h"
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
 
 
 using namespace std;
@@ -14,6 +17,19 @@ using namespace std;
 class PlayerDeck : public Deck
 {
 private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & this->discard;
+		ar & this->deck;
+		ar & blueRegionCards;
+		ar & yellowRegionCards;
+		ar & blackRegionCards;
+		ar & redRegionCards;
+		ar & eventCards;
+	}
+
 	int blueRegionCards;
 	int yellowRegionCards;
 	int blackRegionCards;

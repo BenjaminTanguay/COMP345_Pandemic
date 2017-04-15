@@ -47,42 +47,20 @@ class Display : public Observer
 	Statistics * stats;
 
 	int cityLines();
-	int printPlayer(Player * player, int currentLine, int indexOfPlayer);
-	int printCity(City * city, int currentLine, int maxNumberOfLines, vector<string> * cityConnectionNames);
-	void completeBottomWidget(int numberOfLines);
-	int inputCheck(int lowerBound, int upperBound);
-	void diseaseModification(int region, vector<string>* log, int lineCount, City * currentCity);
-	void loadMapDialog();
-	void regularMapInitialization();
-	void gameInstantiation();
-	void playEventCards();
-	void eventCardPrompt();
-
-	int listCities(vector<City*>* cities, City * city);
-
-	int cityChoice(Player * player, string question, vector<City *> * listOfCities);
+	
 
 public:
 	Display();
 	~Display();
 
+	int listCities(vector<City*>* cities, City * city);
+	int printPlayer(Player * player, int currentLine, int indexOfPlayer);
+	int printCity(City * city, int currentLine, int maxNumberOfLines, vector<string> * cityConnectionNames);
+	void completeBottomWidget(int numberOfLines);
+	int cityChoice(Player * player, string question, vector<City *> * listOfCities);
 	int topWidget();
 	int mainScreen();
 	int cityWidget();
-	void welcomeSceen();
-	void newGameScreen();
-	void mapEditorGeneralDialog();
-	void mapEditorCreateModifyDialog();
-	void mapEditorParametersDialog(string city);
-	void gameLoop();
-	void playerMove();
-	void driveFerry();
-	void directFlight();
-	void charterFlight();
-	void shuttleFlight();
-	void treatDisease();
-	void shareKnowledge();
-	void discoverCure();
 	void Update();
 	void Update(string message);
 	void Update(vector<string> * log);
@@ -91,4 +69,4 @@ public:
 
 };
 
-bool isInteger(const std::string & s);
+

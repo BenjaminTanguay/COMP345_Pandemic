@@ -4,11 +4,9 @@
 // Initialize the objects that needs to go on the heap.
 Session::Session()
 {
-
-	numberOfLocationsPerRegion = new vector<int>;
 	this->numberOfRegionsInPlay = 0;
 	for (int i = 0; i < 4; ++i) {
-		numberOfLocationsPerRegion->push_back(0);
+		numberOfLocationsPerRegion[i] = 0;
 	}
 	this->locations = new unordered_map<string, Location *>;
 	playMap = PlayMap::getInstance();
@@ -17,6 +15,7 @@ Session::Session()
 	this->infectionDeck = new InfectionDeck();
 	this->cityCards = new unordered_map<string, CityCard *>;
 	this->eventCards = new unordered_map<string, EventCard *>;
+	this->log = new Log();
 }
 
 // The origin is used to store the default location where players will begin on the play map. 
@@ -55,8 +54,8 @@ Session::~Session()
 	cityCards = nullptr;
 	delete eventCards;
 	eventCards = nullptr;
-	delete numberOfLocationsPerRegion;
-	numberOfLocationsPerRegion = nullptr;
+	delete log;
+	log = nullptr;
 }
 
 
@@ -149,6 +148,33 @@ bool Session::loadPlayMap(string fileName)
 		locations->emplace(iterate->first->getName(), iterate->first);
 	}
 	return true;
+}
+
+bool Session::saveSession(string fileName)
+{
+	{
+	ofstream outputStream(fileName);
+	boost::archive::text_oarchive archive(outputStream);
+	archive << *this;
+	}
+	return true;
+}
+
+bool Session::loadSession(string fileName)
+{
+	// Test if file access
+	struct stat buffer;
+	if (!stat(fileName.c_str(), &buffer) == 0) {
+		return false;
+	}
+	else {
+		{
+			ifstream inputStream(fileName);
+			boost::archive::text_iarchive unarchive(inputStream);
+			unarchive >> *this;
+		}
+		return true;
+	}
 }
 
 InfectionDeck * Session::getInfectionDeck()
@@ -304,7 +330,7 @@ void Session::addLocation(const string name, const int region)
 	if (loc->getRegion() > numberOfRegionsInPlay) {
 		numberOfRegionsInPlay = loc->getRegion();
 	}
-	++numberOfLocationsPerRegion->at(loc->getRegion() - 1);
+	++numberOfLocationsPerRegion[loc->getRegion() - 1];
 	Session::generateCards(loc);
 	loc = nullptr;
 	
@@ -476,7 +502,12 @@ int Session::getNumberOfRegionInPlay() {
 
 int Session::getNumberOfLocations(int region)
 {
-	return numberOfLocationsPerRegion->at(region -1);
+	return numberOfLocationsPerRegion[region-1];
+}
+
+Log * Session::getLog()
+{
+	return log;
 }
 
 

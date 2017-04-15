@@ -44,14 +44,16 @@ private:
 	int blackDisease;
 	int redDisease;
 
+	vector<bool> players;
+	bool visited;
+
 	// Used to test if a city is already connected to another city.
 	bool contains(City * city, int connection);
 
 	unordered_map<string, City *> * getLocalConnections(int connection);
 	static unordered_map<string, City *> * getForeignConnections(City * city, int connection);
 
-	vector<bool> players;
-	bool visited;
+
 
 
 	
@@ -150,4 +152,6 @@ inline void City::serialize(Archive & ar, const unsigned int version)
 	ar & researchConnections;
 	ar & players;
 	ar & visited;
+	//ar & REGULAR_CONNECTION;
+	//ar & RESEARCH_CONNECTION;
 }

@@ -4,11 +4,16 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
 
 using namespace std;
 class Deck
 {
 protected:
+	friend class boost::serialization::access;
+	
 	vector<Card *> * deck;
 	vector<Card *> * discard;
 

@@ -17,7 +17,7 @@ struct compareMap {
 
 class PlayMap : public Subject
 {
-	// Here for serialization purpose. For this iteraiton, we only want to serialize the play map. Eventually, we may rework it so that the whole session is saved/restored.
+	// Here for serialization purpose. For this iteration, we only want to serialize the play map. Eventually, we may rework it so that the whole session is saved/restored.
 	friend class boost::serialization::access;
 	template<class Archive>
 	inline void PlayMap::serialize(Archive & ar, const unsigned int version)

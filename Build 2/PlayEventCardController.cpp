@@ -2,6 +2,6 @@
 
 void PlayEventCardController::play(CommandActionCards * command, Player * player, Card * card)
 {
-	player->playCardFromHand(card);
+	player->discardCard(card);
 	command->execute();
 }

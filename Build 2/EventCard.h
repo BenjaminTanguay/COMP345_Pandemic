@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 #include "CityCard.h"
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 using namespace std;
 
@@ -10,11 +12,22 @@ class EventCard :
 	public Card
 {
 private:
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & eventId;
+		ar & title;
+		ar & description;
+	}
+
 	int eventId;
 	string title;
 	string description;
 public:
 	EventCard(int eventId);
+	EventCard();
 	~EventCard();
 
 	virtual void read();

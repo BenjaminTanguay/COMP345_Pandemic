@@ -28,6 +28,10 @@ EventCard::EventCard(int eventId) : eventId(eventId)
 	}
 }
 
+EventCard::EventCard()
+{
+}
+
 
 EventCard::~EventCard()
 {

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <windows.h> 
-#include "Display.h"
+#include "Controller.h"
 #include "conio.h"
 #include "tchar.h"
 #include <iostream>
@@ -14,12 +14,11 @@ using namespace std;
 
 
 int main() {
-	
-	static Session & session = Session::getInstance();
-	Display * display = new Display();
-	display->welcomeSceen();
-	delete display;
-	display = nullptr;
+
+	Controller * controller = new Controller();
+	controller->welcomeSceen();
+	delete controller;
+	controller = nullptr;
 	return 0;
 }
 
