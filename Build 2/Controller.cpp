@@ -431,61 +431,102 @@ void Controller::driveFerry()
 void Controller::directFlight()
 {
 	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
-	int verticalLines = display->mainScreen();
-	verticalLines += ConsoleFormat::printEmptyLineWall();
-	verticalLines += ConsoleFormat::printLineOfText("Which city would you like to direct fly to?");
-	vector<Card *> * listOfCards = new vector<Card *>;
-	int iterationNumber = 1;
-	for (set<Card*>::iterator it = currentPlayer->getHand()->begin(); it != currentPlayer->getHand()->end(); it++, ++iterationNumber) {
-		if (dynamic_cast<CityCard*>(*it) != nullptr) {
-			listOfCards->push_back(dynamic_cast<CityCard*>(*it));
-			verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + (*it)->getTitle());
+	bool handContainsCityCard;
+	// Checking to see if the hand contains a city card.
+	for (auto iterate = currentPlayer->getHand()->begin(); iterate != currentPlayer->getHand()->end(); ++iterate) {
+		if (dynamic_cast<CityCard *>((*iterate)) != nullptr) {
+			handContainsCityCard = true;
+			break;
 		}
 	}
-	display->completeBottomWidget(verticalLines);
-	int userInput = inputCheck(1, listOfCards->size());
 
-	Session::getInstance().move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)));
 
-	delete listOfCards;
-	listOfCards = nullptr;
+	if (handContainsCityCard) {
+		int verticalLines = display->mainScreen();
+		verticalLines += ConsoleFormat::printEmptyLineWall();
+		verticalLines += ConsoleFormat::printLineOfText("Which city would you like to direct fly to?");
+		vector<Card *> * listOfCards = new vector<Card *>;
+		int iterationNumber = 1;
+		for (set<Card*>::iterator it = currentPlayer->getHand()->begin(); it != currentPlayer->getHand()->end(); it++, ++iterationNumber) {
+			if (dynamic_cast<CityCard*>(*it) != nullptr) {
+				listOfCards->push_back(dynamic_cast<CityCard*>(*it));
+				verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + (*it)->getTitle());
+			}
+		}
+		display->completeBottomWidget(verticalLines);
+		int userInput = inputCheck(1, listOfCards->size());
+
+		Session::getInstance().move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)));
+		delete listOfCards;
+		listOfCards = nullptr;
+	}
+	else {
+		int verticalLines = display->mainScreen();
+		verticalLines += ConsoleFormat::printEmptyLineWall();
+		verticalLines += ConsoleFormat::printLineOfText("The hand doesn't contain a city card. Direct flight is illegal.");
+		verticalLines += ConsoleFormat::printEmptyLineWall();
+		display->completeBottomWidget(verticalLines);
+	}
+	
 	currentPlayer = nullptr;
 }
 
 void Controller::charterFlight()
 {
 	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
-	vector<City *> * listOfCities = new vector<City *>;
-	int userInput = display->cityChoice(currentPlayer, "Where would you like to charter a flight to?", listOfCities);
-	Session::getInstance().move(Session::getInstance().getCityCards(currentPlayer->getCity()->getName()), listOfCities->at(userInput));
+	Card * card = Session::getInstance().getCityCards(currentPlayer->getCity()->getName());
+	if (currentPlayer->getHand()->find(card) == currentPlayer->getHand()->end()) {
+		int verticalLines = display->mainScreen();
+		verticalLines += ConsoleFormat::printEmptyLineWall();
+		verticalLines += ConsoleFormat::printLineOfText(currentPlayer->getPlayerName() + " doesn't own the " + currentPlayer->getCity()->getName() + " card in his hand. Can't charter a flight.");
+		verticalLines += ConsoleFormat::printEmptyLineWall();
+		display->completeBottomWidget(verticalLines);
+	}
+	else {
+		vector<City *> * listOfCities = new vector<City *>;
+		int userInput = display->cityChoice(currentPlayer, "Where would you like to charter a flight to?", listOfCities);
+		Session::getInstance().move(dynamic_cast<CityCard *>(card), listOfCities->at(userInput));
 
 
-	delete listOfCities;
-	listOfCities = nullptr;
+		delete listOfCities;
+		listOfCities = nullptr;
+	}
 	currentPlayer = nullptr;
+	card = nullptr;
+	
 }
 
 void Controller::shuttleFlight()
 {
 	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
-	if (currentPlayer->getCity()->getResearchConnections()->size() > 1) {
+	if (currentPlayer->getCity()->getResearchCenter()) {
+		if (currentPlayer->getCity()->getResearchConnections()->size() > 0) {
+			int verticalLines = display->mainScreen();
+			verticalLines += ConsoleFormat::printEmptyLineWall();
+			verticalLines += ConsoleFormat::printLineOfText("Where would you like to move?");
+			vector<City *> * listOfCities = new vector<City *>;
+			int iterationNumber = 1;
+			for (auto iterate = currentPlayer->getCity()->getResearchConnections()->begin(); iterate != currentPlayer->getCity()->getResearchConnections()->end(); ++iterate, ++iterationNumber) {
+				listOfCities->push_back(iterate->second);
+				verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + iterate->second->getName());
+			}
+			display->completeBottomWidget(verticalLines);
+			int userInput = inputCheck(1, listOfCities->size());
+
+			
+			Session::getInstance().move(listOfCities->at(userInput - 1));
+
+
+			delete listOfCities;
+			listOfCities = nullptr;
+		}	
+	}
+	else {
 		int verticalLines = display->mainScreen();
 		verticalLines += ConsoleFormat::printEmptyLineWall();
-		verticalLines += ConsoleFormat::printLineOfText("Where would you like to move?");
-		vector<City *> * listOfCities = new vector<City *>;
-		int iterationNumber = 1;
-		for (auto iterate = currentPlayer->getCity()->getResearchConnections()->begin(); iterate != currentPlayer->getCity()->getResearchConnections()->end(); ++iterate, ++iterationNumber) {
-			listOfCities->push_back(iterate->second);
-			verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + iterate->second->getName());
-		}
+		verticalLines += ConsoleFormat::printLineOfText(currentPlayer->getCity()->getName() + " doesn't contain a research center. Illegal move.");
+		verticalLines += ConsoleFormat::printEmptyLineWall();
 		display->completeBottomWidget(verticalLines);
-		int userInput = inputCheck(1, listOfCities->size());
-
-		Session::getInstance().move(listOfCities->at(userInput - 1));
-
-
-		delete listOfCities;
-		listOfCities = nullptr;
 	}
 	currentPlayer = nullptr;
 }
