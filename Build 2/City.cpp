@@ -155,9 +155,6 @@ void City::setResearchCenter(const bool research)
 {
 	bool temp = this->researchCenter;
 	this->researchCenter = research;
-	if (research && GameStateVar::getInstance().getResearchCenterCounter() >= 6) {
-		return;
-	}
 	// If there is a research center built, we loop through the cities with a research center and connect them to this new city. Then we add the new city to the list of research center cities.
 	if (research && !temp) {
 		if (this->researchCities->size() > 0) {
@@ -172,6 +169,12 @@ void City::setResearchCenter(const bool research)
 		for (unsigned i = 0; i < researchCities->size(); ++i) {
 			if (researchCities->at(i) == this) {
 				researchCities->erase(researchCities->begin() + i);
+				delete this->researchConnections;
+				researchConnections = new unordered_map<string, City *>;
+				--i;
+			}
+			else {
+				researchConnections->erase(this->getName());
 			}
 		}
 	}

@@ -44,6 +44,7 @@ public:
 	void directFlight();
 	void charterFlight();
 	void shuttleFlight();
+	void buildResearchCenter();
 	void treatDisease();
 	void shareKnowledge();
 	void discoverCure();
