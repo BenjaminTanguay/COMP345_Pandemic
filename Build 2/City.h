@@ -141,6 +141,10 @@ public:
 template<class Archive>
 inline void City::serialize(Archive & ar, const unsigned int version)
 {
+	ar & researchCities;
+	ar & researchConnections;
+	ar & players;
+	ar & visited;
 	ar & location;
 	ar & researchCenter;
 	ar & blueDisease;
@@ -148,10 +152,6 @@ inline void City::serialize(Archive & ar, const unsigned int version)
 	ar & blackDisease;
 	ar & redDisease;
 	ar & connections;
-	ar & researchCities;
-	ar & researchConnections;
-	ar & players;
-	ar & visited;
 	//ar & REGULAR_CONNECTION;
 	//ar & RESEARCH_CONNECTION;
 }

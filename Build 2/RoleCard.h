@@ -17,6 +17,7 @@ alternatively they could be implemented like the "EventCard" or simply point to 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/base_object.hpp>
 
 using namespace std;
 //#include "Role.h"
@@ -67,6 +68,11 @@ public:
 class ContigencyPlanner : public RoleCard {
 private:
 	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<RoleCard>(*this);
+	}
 
 public:
 	ContigencyPlanner();
@@ -76,6 +82,11 @@ public:
 class OperationExpert : public RoleCard {
 private:
 	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<RoleCard>(*this);
+	}
 public:
 	OperationExpert();
 
@@ -84,6 +95,11 @@ public:
 class Dispatcher : public RoleCard {
 private:
 	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<RoleCard>(*this);
+	}
 public:
 	Dispatcher();
 
@@ -92,6 +108,11 @@ public:
 class QuarantineSpecialist : public RoleCard {
 private:
 	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<RoleCard>(*this);
+	}
 public:
 	QuarantineSpecialist();
 
@@ -100,6 +121,11 @@ public:
 class Researcher : public RoleCard {
 private:
 	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<RoleCard>(*this);
+	}
 public:
 	Researcher();
 
@@ -108,6 +134,11 @@ public:
 class Medic : public RoleCard {
 private:
 	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<RoleCard>(*this);
+	}
 public:
 	Medic();
 
@@ -116,6 +147,11 @@ public:
 class Scientist : public RoleCard {
 private:
 	friend class boost::serialization::access;
+	template<class Archive>
+	inline void serialize(Archive & ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<RoleCard>(*this);
+	}
 public:
 	Scientist();
 

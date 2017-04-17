@@ -5,6 +5,7 @@
 #include "CityCard.h"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/base_object.hpp>
 
 using namespace std;
 
@@ -17,6 +18,7 @@ private:
 	template<class Archive>
 	inline void serialize(Archive & ar, const unsigned int version)
 	{
+		ar & boost::serialization::base_object<Card>(*this);
 		ar & eventId;
 		ar & title;
 		ar & description;

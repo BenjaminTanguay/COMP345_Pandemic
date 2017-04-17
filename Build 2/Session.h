@@ -36,12 +36,15 @@ private:
 	template<class Archive>
 	inline void serialize(Archive & ar, const unsigned int version)
 	{
+		ar.register_type(static_cast<EventCard *>(NULL));
+		ar.register_type(static_cast<CityCard *>(NULL));
+		ar.register_type(static_cast<EpidemicCard *>(NULL));
+		ar & playerDeck;
 		ar & cityCards;
 		ar & eventCards;
 		ar & locations;
 		ar & numberOfLocationsPerRegion;
 		ar & playMap;
-		ar & playerDeck;
 		ar & infectionDeck;
 		ar & numberOfRegionsInPlay;
 		ar & currentPlayer;
@@ -80,8 +83,9 @@ private:
 	int playerTurn;
 	int playerPhase;
 
+
 	// Helper method to generate the cards with a location
-	void Session::generateCards(Location * loc);
+	void generateCards(Location * loc);
 
 	Session();
 	Session(City * origin);

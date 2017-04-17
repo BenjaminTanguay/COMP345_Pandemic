@@ -135,6 +135,9 @@ string Player::build(CityCard * card)
 	if (getCity()->getResearchCenter()) {
 		return getCity()->getName() + " already contains a research center.";
 	}
+	if (hand->find(Session::getInstance().getCityCards(this->getCity()->getName())) == hand->end()) {
+		return playerName + " doesn't own the " + this->getCity()->getName() + " card in his hand. Can't build a research center.";
+	}
 	--actionPoints;
 	getCity()->setResearchCenter(true);
 	discardCard(card);
