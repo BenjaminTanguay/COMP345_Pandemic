@@ -20,6 +20,7 @@ GameStateVar::GameStateVar()
 	this->blackEradicated = false;
 	this->redEradicated = false;
 	this->oneQuietNight = false;
+	this->researchCenterCounter = 0;
 }
 
 

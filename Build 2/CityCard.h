@@ -4,6 +4,8 @@
 #include <string>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/base_object.hpp>
+
 class CityCard :
 	public Card
 {
@@ -12,6 +14,7 @@ private:
 	template<class Archive>
 	inline void serialize(Archive & ar, const unsigned int version)
 	{
+		ar & boost::serialization::base_object<Card>(*this);
 		ar & location;
 	}
 

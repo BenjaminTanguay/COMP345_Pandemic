@@ -14,6 +14,7 @@ this is a generic card given to each player -it is the same for all
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/base_object.hpp>
 
 class ReferenceCard 
 	: public Card {
@@ -21,8 +22,9 @@ class ReferenceCard
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
-	inline void ReferenceCard::serialize(Archive & ar, const unsigned int version)
+	inline void serialize(Archive & ar, const unsigned int version)
 	{
+		ar & boost::serialization::base_object<Card>(*this);
 		ar & name;
 		ar & description;
 	}

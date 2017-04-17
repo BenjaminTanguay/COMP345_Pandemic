@@ -60,6 +60,8 @@ private:
 	template<class Archive>
 	inline void Player::serialize(Archive & ar, const unsigned int version)
 	{
+		ar.register_type(static_cast<EventCard *>(NULL));
+		ar.register_type(static_cast<CityCard *>(NULL));
 		ar & playerName;
 		ar & playerId;
 		ar & actionPoints;
@@ -75,6 +77,7 @@ private:
 		//ar & RESEARCHER;
 		//ar & MEDIC;
 		//ar & SCIENTIST;
+
 	}
 
 
