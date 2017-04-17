@@ -431,9 +431,9 @@ void Session::move(CityCard * card, City * city)
 	Notify(players->at(currentPlayer)->move(card, city));
 }
 
-void Session::build(CityCard * card)
+void Session::build(CityCard * card, City * city)
 {
-	Notify(players->at(currentPlayer)->build(card));
+	Notify(players->at(currentPlayer)->build(card, city));
 }
 
 void Session::treatDisease(int type)

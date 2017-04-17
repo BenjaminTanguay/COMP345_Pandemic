@@ -145,7 +145,7 @@ public:
 	void move(City * city);
 	void move(CityCard * card);
 	void move(CityCard * card, City * city); 
-	void build(CityCard * card);
+	void build(CityCard * card, City * city);
 	void treatDisease(int type);
 	void shareKnowledge(CityCard * card, Player * player);
 	void discoverCure(CityCard * card1, CityCard * card2, CityCard * card3, CityCard * card4, CityCard * card5);

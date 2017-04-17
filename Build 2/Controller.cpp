@@ -380,7 +380,7 @@ void Controller::playerMove()
 		shuttleFlight();
 		break;
 	case 5:
-		Session::getInstance().build(Session::getInstance().getCityCards(currentPlayer->getCity()->getLocation()->getName()));
+		buildResearchCenter();
 		break;
 	case 6:
 		treatDisease();
@@ -516,7 +516,6 @@ void Controller::shuttleFlight()
 			
 			Session::getInstance().move(listOfCities->at(userInput - 1));
 
-
 			delete listOfCities;
 			listOfCities = nullptr;
 		}	
@@ -527,6 +526,33 @@ void Controller::shuttleFlight()
 		verticalLines += ConsoleFormat::printLineOfText(currentPlayer->getCity()->getName() + " doesn't contain a research center. Illegal move.");
 		verticalLines += ConsoleFormat::printEmptyLineWall();
 		display->completeBottomWidget(verticalLines);
+	}
+	currentPlayer = nullptr;
+}
+
+void Controller::buildResearchCenter()
+{
+	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	int verticalLines = display->mainScreen();
+	if (GameStateVar::getInstance().getResearchCenterCounter() == 6) {
+		verticalLines += ConsoleFormat::printLineOfText("Which research station would you like to relocate?");
+		vector<City *> * listOfCities = new vector<City *>;
+		int iterationNumber = 1;
+		// list all research station locations in order to chose one to be moved.
+		for (auto iterate = currentPlayer->getCity()->getResearchConnections()->begin(); iterate != currentPlayer->getCity()->getResearchConnections()->end(); ++iterate, ++iterationNumber) {
+			listOfCities->push_back(iterate->second);
+			verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + iterate->second->getName());
+		}
+		display->completeBottomWidget(verticalLines);
+		int userInput = inputCheck(1, listOfCities->size());
+
+		Session::getInstance().build(Session::getInstance().getCityCards(currentPlayer->getCity()->getLocation()->getName()), listOfCities->at(userInput - 1));
+
+		delete listOfCities;
+		listOfCities = nullptr;
+	}
+	else{
+		Session::getInstance().build(Session::getInstance().getCityCards(currentPlayer->getCity()->getLocation()->getName()), currentPlayer->getCity());
 	}
 	currentPlayer = nullptr;
 }

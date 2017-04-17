@@ -119,30 +119,33 @@ string Player::move(CityCard * card, City * city)
 	return playerName + " chartered a flight to move from " + cityName + " to city: " + city->getName();
 }
 
-string Player::build(CityCard * card)
+string Player::build(CityCard * card, City * city)
 {
+	string exception = "";
+
 	if (actionPoints <= 0) {
 		return "Insufficient action points";
 	}
 	if (getCity()->getLocation() != card->getLocation()) {
 		return "You are currently in " + getCity()->getName() + " and need to be in "
-			+ card->getLocation()->getName() + " to be able to construct a research center" + 
+			+ card->getLocation()->getName() + " to be able to construct a research center" +
 			" with this card";
 	}
-	if (City::getResearchCitiesList()->size() == 6) {
-		return "Maximum number of research centers (6) reached";
+	if (!handContains(card)) {
+		return "You do not have the card for " + getCity()->getName() + " in your hand";
+	}
+	// if we have 6 research stations than one must be moved in order to build a new one, verified with gamestate and the listed city is not the same as the desired build site.
+	if (GameStateVar::getInstance().getResearchCenterCounter() == 6 && City::getResearchCitiesList()->size() == 6 && city->getLocation() != card->getLocation()) {
+		city->setResearchCenter(false);
+		exception = "Maximum number of research centers (6) reached, research station at " + city->getName() + " will be moved.";
 	}
 	if (getCity()->getResearchCenter()) {
 		return getCity()->getName() + " already contains a research center.";
-	}
-	if (hand->find(Session::getInstance().getCityCards(this->getCity()->getName())) == hand->end()) {
-		return playerName + " doesn't own the " + this->getCity()->getName() + " card in his hand. Can't build a research center.";
 	}
 	--actionPoints;
 	getCity()->setResearchCenter(true);
 	discardCard(card);
 	return "Research center constructed in " + getCity()->getName();
-
 }
 
 string Player::treatDisease(int type)
