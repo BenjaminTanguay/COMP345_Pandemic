@@ -107,7 +107,7 @@ string Player::move(CityCard * card, City * city, Player * aPlayer)
 	if (actionPoints <= 0) {
 		return "Insufficient action points";
 	}
-	if (card->getLocation() != aPlayer->getCity()->getLocation()) {
+	if (card->getLocation() != aPlayer->getCity()->getLocation() && (aPlayer->getRole() != 2)) {
 		return "You need to possess the card of the city you are standing on in order to charter a flight";
 	}
 	--actionPoints;
@@ -119,7 +119,7 @@ string Player::move(CityCard * card, City * city, Player * aPlayer)
 	return aPlayer->getPlayerName() + " chartered a flight to move from " + cityName + " to city: " + city->getName();
 }
 
-string Player::build(CityCard * card, City * city)
+string Player::build(CityCard * card, City * city, Player * aPlayer)
 {
 	string exception = "";
 
@@ -131,7 +131,7 @@ string Player::build(CityCard * card, City * city)
 			+ card->getLocation()->getName() + " to be able to construct a research center" +
 			" with this card";
 	}
-	if (!handContains(card)) {
+	if (!handContains(card) && (aPlayer->getRole() != 2)) {
 		return "You do not have the card for " + getCity()->getName() + " in your hand";
 	}
 	// if we have 6 research stations than one must be moved in order to build a new one, verified with gamestate and the listed city is not the same as the desired build site.
@@ -153,10 +153,14 @@ string Player::treatDisease(int type)
 	if (actionPoints <= 0) {
 		return "Insufficient action points";
 	}
+	bool medicDone = false;//watches if the medic cured all of the same color
+	do{ //medic
 	if (this->getCity()->getDisease(type) <= 0) {
 		return this->getCity()->diseaseTranslate(type) + " is absent from " + this->getCity()->getName();
+		medicDone = true;
 	}
 	this->getCity()->decrementDisease(type);
+	} while (this->getRole == 5 && !medicDone);
 	--actionPoints;
 	return this->getCity()->diseaseTranslate(type) + " in " + this->getCity()->getName() + " is now at " + to_string(this->getCity()->getDisease(type));
 }
@@ -208,6 +212,7 @@ string Player::discoverCure(CityCard * card1, CityCard * card2, CityCard * card3
 		discardCard(card2);
 		discardCard(card3);
 		discardCard(card4);
+		if(this->getPlayerRole != 5)
 		discardCard(card5);
 		GameStateVar::getInstance()->setCure(card1->getLocation()->getRegion());
 		return getCity()->diseaseTranslate(card1->getLocation()->getRegion()) + " cured!";

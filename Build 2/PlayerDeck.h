@@ -45,6 +45,7 @@ public:
 
 	Card * draw();
 	void toDiscard(Card * card);
+	vector<Card *> * getDiscard();
 	void initialize();
 
 	void shuffleEpidemic(int i);

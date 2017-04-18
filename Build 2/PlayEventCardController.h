@@ -10,10 +10,19 @@
 class PlayEventCardController
 {
 private:
-	
-
+	static bool contingency;
+	static vector<Card *> * contingencyList;
+	static int contingencyCurrent;
+	static vector<Card *> * discard;
 public:
 	
 	static void play(CommandActionCards * command, Player * player, Card * card);
+	static vector<Card *> * getDiscard();
+	static void pickContingency(Card * card);
+	static Card * getContingencyCurrent(int current);
+	static int getContingencyCurrent();
+	static bool getContingency();
+	static bool trashDiscard(EventCard * card);
+
 };
 

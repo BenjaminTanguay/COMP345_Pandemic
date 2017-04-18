@@ -25,6 +25,10 @@ Card* PlayerDeck::draw()
 	return NULL;
 }
 
+vector<Card *> * PlayerDeck::getDiscard() {
+	return this->discard;
+}
+
 void PlayerDeck::toDiscard(Card * card)
 {
 	this->discard->push_back(card);

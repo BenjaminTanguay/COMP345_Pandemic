@@ -461,6 +461,7 @@ void Controller::directFlight(Player * aPlayer)
 		display->completeBottomWidget(verticalLines);
 		int userInput = inputCheck(1, listOfCards->size());
 
+
 		Session::getInstance()->move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)), aPlayer);
 		delete listOfCards;
 		listOfCards = nullptr;
@@ -482,7 +483,7 @@ void Controller::charterFlight(Player * aPlayer)
 	Card * card = Session::getInstance()->getCityCards(aPlayer->getCity()->getName());
 	
 
-	if (currentPlayer->getHand()->find(card) == currentPlayer->getHand()->end()) {
+	if (currentPlayer->getHand()->find(card) == currentPlayer->getHand()->end() && (currentPlayer->getRole() != 2)) {
 		int verticalLines = display->mainScreen();
 		verticalLines += ConsoleFormat::printEmptyLineWall();
 		verticalLines += ConsoleFormat::printLineOfText(currentPlayer->getPlayerName() + " doesn't own the " + aPlayer->getCity()->getName() + " card in his hand. Can't charter a flight.");
@@ -503,6 +504,7 @@ void Controller::charterFlight(Player * aPlayer)
 	card = nullptr;
 
 }
+
 
 void Controller::shuttleFlight(Player * aPlayer)
 {
@@ -534,7 +536,6 @@ void Controller::shuttleFlight(Player * aPlayer)
 
 
 			Session::getInstance()->move(listOfCities->at(userInput - 1), aPlayer);
-
 			delete listOfCities;
 			listOfCities = nullptr;
 		}
@@ -645,11 +646,23 @@ void Controller::discoverCure()
 
 			for (int j = 0; j < listOfCards->size(); ++j) {
 				verticalLines += ConsoleFormat::printLineOfText(to_string(j + 1) + ". " + listOfCards->at(j)->getTitle());
+				//scientist
+				if(currentPlayer->getRole() == 7) {
+					
+					j++;
+				}
+					
 			}
+			
 			display->completeBottomWidget(verticalLines);
 			userInput = inputCheck(1, listOfCards->size()) - 1;
 			listOfSelectedCards->push_back(listOfCards->at(userInput));
 			listOfCards->erase(listOfCards->begin() + userInput);
+
+			//scientist
+			if (currentPlayer->getRole() == 7) {
+				listOfSelectedCards->push_back(listOfCards->at(0));
+			}
 		}
 		Session::getInstance()->discoverCure(listOfSelectedCards->at(0), listOfSelectedCards->at(1), listOfSelectedCards->at(2), listOfSelectedCards->at(3), listOfSelectedCards->at(4));
 
@@ -859,6 +872,11 @@ void Controller::playEventCards()
 				pairEventCardPlayerIndex->push_back(make_pair(dynamic_cast<EventCard *>(*it), i));
 				verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + (*it)->getTitle());
 			}
+			
+		}
+		if (players->at(i)->getRole() == 1 && PlayEventCardController::getContingency()) {
+			pairEventCardPlayerIndex->push_back(make_pair(dynamic_cast<EventCard *>(PlayEventCardController::getContingencyCurrent(PlayEventCardController::getContingencyCurrent())), i));
+
 		}
 	}
 	verticalLines += ConsoleFormat::printEmptyLineWall();
@@ -873,6 +891,7 @@ void Controller::playEventCards()
 
 	delete pairEventCardPlayerIndex;
 	pairEventCardPlayerIndex = nullptr;
+
 
 
 	// Variables needed for switch cases
@@ -1048,10 +1067,44 @@ void Controller::playRole()
 	switch (currentPlayer->getRole()) {
 		;//playrole
 	case 1:
-
+		vector<Card *> * vec = PlayEventCardController::getDiscard();
+		int iterationNumber = 1;
+		for (auto iterate = vec->begin(); iterate != vec->end(); ++iterate, ++iterationNumber) {
+			verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + to_string(dynamic_cast<EventCard *>(vec->at(iterationNumber - 1))->getEventId()));
+		}
+		verticalLines += ConsoleFormat::printLineOfText("Choose a contingency card");
+		int userInput = inputCheck(1, vec->size());
 		break;
 	case 2:
+		bool handContainsCityCard;
+		for (auto iterate = currentPlayer->getHand()->begin(); iterate != currentPlayer->getHand()->end(); ++iterate) {
+			if (dynamic_cast<CityCard *>((*iterate)) != nullptr) {
+				handContainsCityCard = true;
+				break;
+			}
+		}
 
+
+		if (handContainsCityCard) {
+			int verticalLines = display->mainScreen();
+			verticalLines += ConsoleFormat::printEmptyLineWall();
+			verticalLines += ConsoleFormat::printLineOfText("Which city would you like to discard?");
+			vector<Card *> * listOfCards = new vector<Card *>;
+			int iterationNumber = 1;
+			for (set<Card*>::iterator it = currentPlayer->getHand()->begin(); it != currentPlayer->getHand()->end(); it++, ++iterationNumber) {
+				if (dynamic_cast<CityCard*>(*it) != nullptr) {
+					listOfCards->push_back(dynamic_cast<CityCard*>(*it));
+					verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + (*it)->getTitle());
+				}
+			}
+			display->completeBottomWidget(verticalLines);
+			int userInput = inputCheck(1, listOfCards->size());
+			
+			Session::getInstance()->move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)), currentPlayer);
+			delete listOfCards;
+			listOfCards = nullptr;
+		}
+		
 		break;
 	case 3:
 		playerMove(choseAPlayer());

@@ -131,7 +131,7 @@ public:
 	string move(City * city, Player * aPlayer); // Regular movement
 	string move(CityCard * card, Player * aPlayer); // Move to city on card
 	string move(CityCard * card, City * city, Player * aPlayer); // If card == current city, move to any city
-	string build(CityCard * card, City * city); // Build center if hand has current city as card
+	string build(CityCard * card, City * city, Player * aPlayer); // Build center if hand has current city as card
 	string treatDisease(int type); 
 	string shareKnowledge(CityCard * card, Player * player);
 	string discoverCure(CityCard * card1, CityCard * card2, CityCard * card3, CityCard * card4, CityCard * card5);
