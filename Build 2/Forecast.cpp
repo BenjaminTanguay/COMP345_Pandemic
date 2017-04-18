@@ -13,5 +13,5 @@ Forecast::~Forecast()
 
 void Forecast::execute()
 {
-	Session::getInstance().getInfectionDeck()->putForeCast(forecast);
+	Session::getInstance()->getInfectionDeck()->putForeCast(forecast);
 }

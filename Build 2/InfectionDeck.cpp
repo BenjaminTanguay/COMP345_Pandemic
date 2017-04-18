@@ -37,7 +37,7 @@ Location * InfectionDeck::epidemic()
 	Card * bottom = this->deck->at(0);
 
 	// Increase infectionrate
-	GameStateVar::getInstance().incrementInfection();
+	GameStateVar::getInstance()->incrementInfection();
 
 	// Put it in the discard pile
 	this->discard->push_back(bottom);

@@ -65,9 +65,12 @@ private:
 	GameStateVar();
 	~GameStateVar();
 
-public:
-	static GameStateVar & getInstance();
+	void constructGameState();
 
+public:
+	static GameStateVar * getInstance();
+
+	void reset();
 	int getResearchCenterCounter();
 	void incrementResearchCenterCounter();
 
@@ -110,6 +113,12 @@ public:
 	void setEradicated(int region);
 
 	int getDisease(int region);
+
+	bool isGameWon();
+
+	bool isGameLost();
+
+	bool isGameOver();
 
 };
 

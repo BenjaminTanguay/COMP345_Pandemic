@@ -5,7 +5,7 @@
 
 Display::Display()
 {
-	Session::getInstance().Attach(this);
+	Session::getInstance()->Attach(this);
 	stats = new PercentInfectedCityStatisticsDecorator(new Statistics);
 	stats->Attach(this);
 
@@ -41,7 +41,7 @@ Display::Display()
 
 Display::~Display()
 {
-	Session::getInstance().Detach(this);
+	Session::getInstance()->Detach(this);
 	stats->Detach(this);
 	delete stats;
 	stats = nullptr;
@@ -49,7 +49,7 @@ Display::~Display()
 
 int Display::cityLines() {
 	int maxLines = 0;
-	for (auto iterate = Session::getInstance().getPlayMap()->begin(); iterate != Session::getInstance().getPlayMap()->end(); ++iterate) {
+	for (auto iterate = Session::getInstance()->getPlayMap()->begin(); iterate != Session::getInstance()->getPlayMap()->end(); ++iterate) {
 		int lines = 5;
 		lines += iterate->second->getConnections()->size();
 		if (lines > maxLines) {
@@ -78,7 +78,7 @@ int Display::printPlayer(Player * player, int currentLine, int indexOfPlayer) {
 			ConsoleFormat::setColor(teal, black);
 			break;
 		}
-		if (indexOfPlayer == Session::getInstance().getCurrentPlayer()) {
+		if (indexOfPlayer == Session::getInstance()->getCurrentPlayer()) {
 			return ConsoleFormat::makeBox(boxSize, "->  " + player->getPlayerName());
 		}
 		else {
@@ -109,10 +109,10 @@ int Display::printCity(City * city, int currentLine, int maxNumberOfLines, vecto
 		ConsoleFormat::setColor(city->getLocation()->getRegion());
 		return ConsoleFormat::makeBox(boxLength - 4, city->getLocation()->getName());
 	case 1:
-		for (int i = 0; i < Session::getInstance().getNumberOfRegionInPlay(); ++i) {
+		for (int i = 0; i < Session::getInstance()->getNumberOfRegionInPlay(); ++i) {
 			cityDiseaseNumber->push_back(to_string(city->getDisease(i + 1)));
 		}
-		return ConsoleFormat::printMultipleColorBoxWithData(boxLength, Session::getInstance().getNumberOfRegionInPlay(), cityDiseaseNumber, ConsoleFormat::region);
+		return ConsoleFormat::printMultipleColorBoxWithData(boxLength, Session::getInstance()->getNumberOfRegionInPlay(), cityDiseaseNumber, ConsoleFormat::region);
 		cityDiseaseNumber = nullptr;
 	case 2:
 		ConsoleFormat::setColor(lgrey, black);
@@ -168,7 +168,7 @@ int Display::printCity(City * city, int currentLine, int maxNumberOfLines, vecto
 int Display::cityWidget() {
 	int lines = cityLines();
 	int columns = 9;
-	int numberOfCities = Session::getInstance().getPlayMap()->size();
+	int numberOfCities = Session::getInstance()->getPlayMap()->size();
 	int row = (numberOfCities / columns);
 	if (numberOfCities != columns) {
 		++row;
@@ -176,7 +176,7 @@ int Display::cityWidget() {
 	int lineLength;
 	int separator = 5;
 	vector<City *> * cities = new vector<City *>;
-	for (auto iterate = Session::getInstance().getPlayMap()->begin(); iterate != Session::getInstance().getPlayMap()->end(); ++iterate) {
+	for (auto iterate = Session::getInstance()->getPlayMap()->begin(); iterate != Session::getInstance()->getPlayMap()->end(); ++iterate) {
 		cities->push_back(iterate->second);
 	}
 
@@ -246,7 +246,7 @@ void Display::Update()
 
 void Display::Update(string message)
 {
-	Session::getInstance().getLog()->stringToLog("");
+	Session::getInstance()->getLog()->stringToLog("");
 	int verticalLines = mainScreen();
 	verticalLines += ConsoleFormat::printEmptyLineWall();
 	verticalLines += ConsoleFormat::printLineOfText(message);
@@ -255,7 +255,7 @@ void Display::Update(string message)
 
 void Display::Update(vector<string>* log)
 {
-	Session::getInstance().getLog()->stringToLog("");
+	Session::getInstance()->getLog()->stringToLog("");
 	int verticalLines = mainScreen();
 	verticalLines += ConsoleFormat::printEmptyLineWall();
 	for (int i = 0; i < log->size(); ++i) {
@@ -269,9 +269,9 @@ void Display::Update(vector<string>* log)
 int Display::topWidget() {
 	int separation;
 	vector<vector<Card *> *> * cards = new vector<vector<Card *> *>;
-	for (unsigned i = 0; i < Session::getInstance().getPlayers()->size(); ++i) {
+	for (unsigned i = 0; i < Session::getInstance()->getPlayers()->size(); ++i) {
 		cards->push_back(new vector<Card *>);
-		for (auto iterate = Session::getInstance().getPlayers()->at(i)->getHand()->begin(); iterate != Session::getInstance().getPlayers()->at(i)->getHand()->end(); ++iterate) {
+		for (auto iterate = Session::getInstance()->getPlayers()->at(i)->getHand()->begin(); iterate != Session::getInstance()->getPlayers()->at(i)->getHand()->end(); ++iterate) {
 			if (dynamic_cast<CityCard *>(*iterate) != nullptr) {
 				cards->at(i)->push_back(dynamic_cast<CityCard *>(*iterate));
 			}
@@ -282,7 +282,7 @@ int Display::topWidget() {
 	}
 
 
-	switch (Session::getInstance().getPlayers()->size()) {
+	switch (Session::getInstance()->getPlayers()->size()) {
 	case 1:
 		separation = 30;
 		break;
@@ -312,16 +312,16 @@ int Display::topWidget() {
 		int temp;
 		switch (i - 1) {
 		case 1:
-			temp = GameStateVar::getInstance().getBlue();
+			temp = GameStateVar::getInstance()->getBlue();
 			break;
 		case 2:
-			temp = GameStateVar::getInstance().getYellow();
+			temp = GameStateVar::getInstance()->getYellow();
 			break;
 		case 3:
-			temp = GameStateVar::getInstance().getBlack();
+			temp = GameStateVar::getInstance()->getBlack();
 			break;
 		case 4:
-			temp = GameStateVar::getInstance().getRed();
+			temp = GameStateVar::getInstance()->getRed();
 			break;
 		default:
 			temp = -1;
@@ -340,10 +340,10 @@ int Display::topWidget() {
 		
 		int region = i - 1;
 		if (region > 0 && region < 5) {
-			if (GameStateVar::getInstance().getEradicated(region)) {
+			if (GameStateVar::getInstance()->getEradicated(region)) {
 				data = "Eradicated";
 			}
-			else if (GameStateVar::getInstance().getCure(region)) {
+			else if (GameStateVar::getInstance()->getCure(region)) {
 				data = "Cured";
 			}
 			else {
@@ -362,16 +362,16 @@ int Display::topWidget() {
 
 		switch (i - 1) {
 		case 1:
-			data = to_string(GameStateVar::getInstance().getInfectionRate());
+			data = to_string(GameStateVar::getInstance()->getInfectionRate());
 			break;
 		case 2:
-			data = to_string(GameStateVar::getInstance().infectionIncreaseIn());
+			data = to_string(GameStateVar::getInstance()->infectionIncreaseIn());
 			break;
 		case 3:
-			data = to_string(8 - GameStateVar::getInstance().getEclosionCounter());
+			data = to_string(8 - GameStateVar::getInstance()->getEclosionCounter());
 			break;
 		case 4:
-			data = to_string(Session::getInstance().getPlayerDeck()->getSize());
+			data = to_string(Session::getInstance()->getPlayerDeck()->getSize());
 			break;
 		default:
 			data = "";
@@ -386,7 +386,7 @@ int Display::topWidget() {
 
 		
 
-		if (Session::getInstance().getPlayers()->size() == 0) {
+		if (Session::getInstance()->getPlayers()->size() == 0) {
 			ConsoleFormat::printRightWall(lineLength);
 			continue;
 		}
@@ -402,9 +402,9 @@ int Display::topWidget() {
 
 		lineLength += ConsoleFormat::printSeparation(separation);
 
-		for (unsigned j = 0; j < Session::getInstance().getPlayers()->size(); ++j) {
+		for (unsigned j = 0; j < Session::getInstance()->getPlayers()->size(); ++j) {
 			if (i < 3 || i == 10) {
-				lineLength += printPlayer(Session::getInstance().getPlayers()->at(j), i, j);
+				lineLength += printPlayer(Session::getInstance()->getPlayers()->at(j), i, j);
 			}
 			else if (i > 10) {
 				ConsoleFormat::setColor(lgrey, black);
@@ -426,7 +426,7 @@ int Display::topWidget() {
 
 			}
 			
-			if (j < Session::getInstance().getPlayers()->size() - 1) {
+			if (j < Session::getInstance()->getPlayers()->size() - 1) {
 				lineLength += ConsoleFormat::printSeparation(separation);
 			}
 		}

@@ -28,8 +28,8 @@ int Controller::inputCheck(int lowerBound, int upperBound)
 			ConsoleFormat::printEmptyLineWall();
 		}
 		else {
-			Session::getInstance().getLog()->stringToLog(textInput);
-			Session::getInstance().getLog()->stringToLog("");
+			Session::getInstance()->getLog()->stringToLog(textInput);
+			Session::getInstance()->getLog()->stringToLog("");
 			return stoi(textInput);
 		}
 	}
@@ -89,16 +89,18 @@ void Controller::newGameScreen()
 
 		switch (inputCheck(1, 4)) {
 		case 1:
-			Session::getInstance().clearPlayMap();
+			Session::getInstance()->clearPlayMap();
 			regularMapInitialization();
 			gameInstantiation();
 			gameLoop();
+			Session::getInstance()->resetSession();
 			break;
 		case 2:
-			Session::getInstance().clearPlayMap();
+			Session::getInstance()->clearPlayMap();
 			loadFileDialog(map);
 			gameInstantiation();
 			gameLoop();
+			Session::getInstance()->resetSession();
 			break;
 		case 3:
 			loadFileDialog(game);
@@ -120,7 +122,7 @@ void Controller::mapEditorGeneralDialog()
 
 		switch (inputCheck(1, 3)) {
 		case 1:
-			Session::getInstance().clearPlayMap();
+			Session::getInstance()->clearPlayMap();
 			mapEditorCreateModifyDialog();
 			break;
 		case 2:
@@ -166,7 +168,7 @@ void Controller::mapEditorCreateModifyDialog()
 			ConsoleFormat::printEmptyLineWall();
 			cityRegion = inputCheck(1, 4);
 			ConsoleFormat::printEmptyLineWall();
-			Session::getInstance().addLocation(input, cityRegion);
+			Session::getInstance()->addLocation(input, cityRegion);
 			break;
 		case 2:
 			ConsoleFormat::printEmptyLineWall();
@@ -174,7 +176,7 @@ void Controller::mapEditorCreateModifyDialog()
 			ConsoleFormat::printEmptyLineWall();
 			cin >> input;
 			ConsoleFormat::printEmptyLineWall();
-			if (Session::getInstance().getLocation()->find(input) != Session::getInstance().getLocation()->end()) {
+			if (Session::getInstance()->getLocation()->find(input) != Session::getInstance()->getLocation()->end()) {
 				mapEditorParametersDialog(input);
 			}
 			else {
@@ -211,7 +213,7 @@ void Controller::mapEditorCreateModifyDialog()
 
 void Controller::mapEditorParametersDialog(string city)
 {
-	City * currentCity = Session::getInstance().getCity(city);
+	City * currentCity = Session::getInstance()->getCity(city);
 	vector<City *> * cities = new vector<City *>;
 	int input = 0;
 	while (true) {
@@ -234,7 +236,7 @@ void Controller::mapEditorParametersDialog(string city)
 
 		switch (inputCheck(1, 9)) {
 		case 1:
-			Session::getInstance().setOrigin(currentCity->getLocation());
+			Session::getInstance()->setOrigin(currentCity->getLocation());
 			display->Update("Origin is now " + currentCity->getName());
 			break;
 		case 2:
@@ -271,7 +273,7 @@ void Controller::mapEditorParametersDialog(string city)
 
 			ConsoleFormat::printEmptyLineWall();
 			input = inputCheck(1, cities->size());
-			Session::getInstance().connectCity(currentCity->getLocation(), cities->at(input - 1)->getLocation(), false);
+			Session::getInstance()->connectCity(currentCity->getLocation(), cities->at(input - 1)->getLocation(), false);
 			break;
 		case 8:
 			lineCount = display->mainScreen();
@@ -301,8 +303,8 @@ void Controller::mapEditorParametersDialog(string city)
 void Controller::gameLoop()
 {
 	int verticalLines = 0;
-	int currentPlayerIndex = Session::getInstance().getCurrentPlayer();
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(currentPlayerIndex);
+	int currentPlayerIndex = Session::getInstance()->getCurrentPlayer();
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(currentPlayerIndex);
 	do {
 
 		while (currentPlayer->getActionPoints() != 0) {
@@ -311,44 +313,42 @@ void Controller::gameLoop()
 		for (int i = 0; i < 2; ++i) {
 			// goes in a wrapper to display the card
 			vector<string> * log = new vector<string>;
-			Session::getInstance().playerDraw(currentPlayerIndex);
+			Session::getInstance()->playerDraw(currentPlayerIndex);
 			handSizeCheck(currentPlayer);
 			log = nullptr;
 		}
-		Session::getInstance().incrementCurrentPlayer();
-		currentPlayerIndex = Session::getInstance().getCurrentPlayer();
-		currentPlayer = Session::getInstance().getPlayers()->at(currentPlayerIndex);
+		Session::getInstance()->incrementCurrentPlayer();
+		currentPlayerIndex = Session::getInstance()->getCurrentPlayer();
+		currentPlayer = Session::getInstance()->getPlayers()->at(currentPlayerIndex);
 		currentPlayer->refreshActions();
 
-		if (!(GameStateVar::getInstance().getOneQuietNight())) {
-			for (int i = 0; i < GameStateVar::getInstance().getInfectionRate(); ++i) {
+		if (!(GameStateVar::getInstance()->getOneQuietNight())) {
+			for (int i = 0; i < GameStateVar::getInstance()->getInfectionRate(); ++i) {
 				// goes in a wrapper to display the card
 				eventCardPrompt();
-				Session::getInstance().drawFromInfectionDeck(new vector<string>);
+				Session::getInstance()->drawFromInfectionDeck(new vector<string>);
 			}
 		}
 		else {
-			GameStateVar::getInstance().setOneQuietNight(false);
+			GameStateVar::getInstance()->setOneQuietNight(false);
 		}
 
-	} while (!((GameStateVar::getInstance().getEclosionCounter() == 8 ||
-		GameStateVar::getInstance().getBlue() == 0 ||
-		GameStateVar::getInstance().getYellow() == 0 ||
-		GameStateVar::getInstance().getBlack() == 0 ||
-		GameStateVar::getInstance().getRed() == 0)
-		|| (GameStateVar::getInstance().getCure(1) &&
-			GameStateVar::getInstance().getCure(2) &&
-			GameStateVar::getInstance().getCure(3) &&
-			GameStateVar::getInstance().getCure(4))));
+	} while (!GameStateVar::getInstance()->isGameOver());
 
-	Session::getInstance().getLog()->recordLog();
-	Session::getInstance().getLog()->stopLog();
+	if (GameStateVar::getInstance()->isGameLost()) {
+		display->Update("Game over. You lose! Better luck next time.");
+	}
+	else {
+		display->Update("Game over. You win! Congratulation");
+	}
+	Session::getInstance()->getLog()->recordLog();
+	Session::getInstance()->getLog()->stopLog();
 
 }
 
 void Controller::playerMove()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	int verticalLines = display->mainScreen();
 	verticalLines += ConsoleFormat::printEmptyLineWall();
 	verticalLines += ConsoleFormat::printLineOfText("Player options");
@@ -392,10 +392,10 @@ void Controller::playerMove()
 		discoverCure();
 		break;
 	case 9:
-		Session::getInstance().consultReference();
+		Session::getInstance()->consultReference();
 		break;
 	case 10:
-		Session::getInstance().consultRoleCard();
+		Session::getInstance()->consultRoleCard();
 		break;
 	case 11:
 		eventCardPrompt();
@@ -408,7 +408,7 @@ void Controller::playerMove()
 
 void Controller::driveFerry()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	int verticalLines = display->mainScreen();
 	verticalLines += ConsoleFormat::printEmptyLineWall();
 	verticalLines += ConsoleFormat::printLineOfText("Where would you like to move?");
@@ -421,7 +421,7 @@ void Controller::driveFerry()
 	display->completeBottomWidget(verticalLines);
 	int userInput = inputCheck(1, listOfCities->size());
 
-	Session::getInstance().move(listOfCities->at(userInput - 1));
+	Session::getInstance()->move(listOfCities->at(userInput - 1));
 
 	currentPlayer = nullptr;
 	delete listOfCities;
@@ -430,7 +430,7 @@ void Controller::driveFerry()
 
 void Controller::directFlight()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	bool handContainsCityCard;
 	// Checking to see if the hand contains a city card.
 	for (auto iterate = currentPlayer->getHand()->begin(); iterate != currentPlayer->getHand()->end(); ++iterate) {
@@ -456,7 +456,7 @@ void Controller::directFlight()
 		display->completeBottomWidget(verticalLines);
 		int userInput = inputCheck(1, listOfCards->size());
 
-		Session::getInstance().move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)));
+		Session::getInstance()->move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)));
 		delete listOfCards;
 		listOfCards = nullptr;
 	}
@@ -473,8 +473,8 @@ void Controller::directFlight()
 
 void Controller::charterFlight()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
-	Card * card = Session::getInstance().getCityCards(currentPlayer->getCity()->getName());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
+	Card * card = Session::getInstance()->getCityCards(currentPlayer->getCity()->getName());
 	if (currentPlayer->getHand()->find(card) == currentPlayer->getHand()->end()) {
 		int verticalLines = display->mainScreen();
 		verticalLines += ConsoleFormat::printEmptyLineWall();
@@ -485,7 +485,7 @@ void Controller::charterFlight()
 	else {
 		vector<City *> * listOfCities = new vector<City *>;
 		int userInput = display->cityChoice(currentPlayer, "Where would you like to charter a flight to?", listOfCities);
-		Session::getInstance().move(dynamic_cast<CityCard *>(card), listOfCities->at(userInput));
+		Session::getInstance()->move(dynamic_cast<CityCard *>(card), listOfCities->at(userInput));
 
 
 		delete listOfCities;
@@ -498,7 +498,7 @@ void Controller::charterFlight()
 
 void Controller::shuttleFlight()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	if (currentPlayer->getCity()->getResearchCenter()) {
 		if (currentPlayer->getCity()->getResearchConnections()->size() > 0) {
 			int verticalLines = display->mainScreen();
@@ -514,7 +514,7 @@ void Controller::shuttleFlight()
 			int userInput = inputCheck(1, listOfCities->size());
 
 			
-			Session::getInstance().move(listOfCities->at(userInput - 1));
+			Session::getInstance()->move(listOfCities->at(userInput - 1));
 
 			delete listOfCities;
 			listOfCities = nullptr;
@@ -532,9 +532,9 @@ void Controller::shuttleFlight()
 
 void Controller::buildResearchCenter()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	int verticalLines = display->mainScreen();
-	if (GameStateVar::getInstance().getResearchCenterCounter() == 6) {
+	if (GameStateVar::getInstance()->getResearchCenterCounter() == 6) {
 		verticalLines += ConsoleFormat::printLineOfText("Which research station would you like to relocate?");
 		vector<City *> * listOfCities = new vector<City *>;
 		int iterationNumber = 1;
@@ -546,13 +546,13 @@ void Controller::buildResearchCenter()
 		display->completeBottomWidget(verticalLines);
 		int userInput = inputCheck(1, listOfCities->size());
 
-		Session::getInstance().build(Session::getInstance().getCityCards(currentPlayer->getCity()->getLocation()->getName()), listOfCities->at(userInput - 1));
+		Session::getInstance()->build(Session::getInstance()->getCityCards(currentPlayer->getCity()->getLocation()->getName()), listOfCities->at(userInput - 1));
 
 		delete listOfCities;
 		listOfCities = nullptr;
 	}
 	else{
-		Session::getInstance().build(Session::getInstance().getCityCards(currentPlayer->getCity()->getLocation()->getName()), currentPlayer->getCity());
+		Session::getInstance()->build(Session::getInstance()->getCityCards(currentPlayer->getCity()->getLocation()->getName()), currentPlayer->getCity());
 	}
 	currentPlayer = nullptr;
 }
@@ -570,22 +570,22 @@ void Controller::treatDisease()
 
 	int userInput = inputCheck(1, 4);
 
-	Session::getInstance().treatDisease(userInput);
+	Session::getInstance()->treatDisease(userInput);
 }
 
 void Controller::shareKnowledge()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	if (currentPlayer->getCity()->getPlayer() > 1) {
 		int verticalLines = display->mainScreen();
 		verticalLines += ConsoleFormat::printEmptyLineWall();
 		verticalLines += ConsoleFormat::printLineOfText("Who would you like to share knowledge with?");
 		vector<Player *> * players = new vector<Player *>;
 		int numberOfPlayers = 0;
-		for (int i = 1; i < Session::getInstance().getPlayers()->size(); ++i) {
+		for (int i = 1; i < Session::getInstance()->getPlayers()->size(); ++i) {
 			if (currentPlayer->getCity()->containPlayer(i) && currentPlayer->getPlayerId() != (i + 1)) {
 				++numberOfPlayers;
-				players->push_back(Session::getInstance().getPlayers()->at(i));
+				players->push_back(Session::getInstance()->getPlayers()->at(i));
 				verticalLines += ConsoleFormat::printLineOfText(to_string(numberOfPlayers) + ". " + players->at(numberOfPlayers - 1)->getPlayerName());
 			}
 		}
@@ -594,7 +594,7 @@ void Controller::shareKnowledge()
 		int selectedPlayerIndex = inputCheck(1, players->size()) - 1;
 
 
-		Session::getInstance().shareKnowledge(Session::getInstance().getCityCards(currentPlayer->getCity()->getName()), players->at(selectedPlayerIndex));
+		Session::getInstance()->shareKnowledge(Session::getInstance()->getCityCards(currentPlayer->getCity()->getName()), players->at(selectedPlayerIndex));
 		handSizeCheck(currentPlayer);
 		handSizeCheck(players->at(selectedPlayerIndex));
 
@@ -607,7 +607,7 @@ void Controller::shareKnowledge()
 
 void Controller::discoverCure()
 {
-	Player * currentPlayer = Session::getInstance().getPlayers()->at(Session::getInstance().getCurrentPlayer());
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	vector<CityCard *> * listOfCards = new vector<CityCard *>;
 	for (set<Card*>::iterator it = currentPlayer->getHand()->begin(); it != currentPlayer->getHand()->end(); it++) {
 		if (dynamic_cast<CityCard*>(*it) != nullptr) {
@@ -632,7 +632,7 @@ void Controller::discoverCure()
 			listOfSelectedCards->push_back(listOfCards->at(userInput));
 			listOfCards->erase(listOfCards->begin() + userInput);
 		}
-		Session::getInstance().discoverCure(listOfSelectedCards->at(0), listOfSelectedCards->at(1), listOfSelectedCards->at(2), listOfSelectedCards->at(3), listOfSelectedCards->at(4));
+		Session::getInstance()->discoverCure(listOfSelectedCards->at(0), listOfSelectedCards->at(1), listOfSelectedCards->at(2), listOfSelectedCards->at(3), listOfSelectedCards->at(4));
 
 
 
@@ -654,14 +654,14 @@ void Controller::diseaseModification(int region, vector<string>* log, int lineCo
 		vector<string> * log = new vector<string>;
 		if (diseaseValue > currentCity->getDisease(region)) {
 			for (int i = 0; i < diseaseValue; ++i) {
-				GameStateVar::getInstance().decrementCube(region, log);
+				GameStateVar::getInstance()->decrementCube(region, log);
 				currentCity->incrementDisease(region);
 				log->push_back("Disease incremented to " + to_string(i + 1) + " in " + currentCity->getName());
 			}
 		}
 		else {
 			for (int i = currentCity->getDisease(region); i > diseaseValue; --i) {
-				GameStateVar::getInstance().incrementCube(region);
+				GameStateVar::getInstance()->incrementCube(region);
 				log->push_back("One " + currentCity->diseaseTranslate(region) + " cube returned");
 				currentCity->decrementDisease(region);
 				log->push_back("Disease incremented to " + to_string(i + 1) + " in " + currentCity->getName());
@@ -681,10 +681,10 @@ void Controller::loadFileDialog(int mapOrGame)
 	cin >> fileName;
 	switch (mapOrGame) {
 	case game:
-		loadSuccess = Session::getInstance().loadSession(fileName);
+		loadSuccess = Session::getInstance()->loadSession(fileName);
 		break;
 	case map:
-		loadSuccess = Session::getInstance().loadPlayMap(fileName);
+		loadSuccess = Session::getInstance()->loadPlayMap(fileName);
 		break;
 	default:
 		break;
@@ -709,10 +709,10 @@ void Controller::saveFileDialog(int mapOrGame)
 
 	switch (mapOrGame) {
 	case map:
-		saveSuccess = Session::getInstance().savePlayMap(fileName);
+		saveSuccess = Session::getInstance()->savePlayMap(fileName);
 		break;
 	case game:
-		saveSuccess = Session::getInstance().saveSession(fileName);
+		saveSuccess = Session::getInstance()->saveSession(fileName);
 		break;
 	default:
 		break;
@@ -742,10 +742,10 @@ void Controller::gameInstantiation()
 	logGame = Controller::inputCheck(1, 2);
 	switch (logGame) {
 	case 1:
-		Session::getInstance().getLog()->startLog();
+		Session::getInstance()->getLog()->startLog();
 		break;
 	default:
-		Session::getInstance().getLog()->stopLog();
+		Session::getInstance()->getLog()->stopLog();
 		break;
 	}
 
@@ -759,7 +759,7 @@ void Controller::gameInstantiation()
 	ConsoleFormat::printLineOfText("3. Heroic");
 	ConsoleFormat::printEmptyLineWall();
 	ConsoleFormat::printEmptyLineWall();
-	Session::getInstance().setDifficultyLevel(Controller::inputCheck(1, 3));
+	Session::getInstance()->setDifficultyLevel(Controller::inputCheck(1, 3));
 
 	for (int i = 0; i < playerCount; ++i) {
 		lineCount += ConsoleFormat::printLineOfText("What is the name of player " + to_string(i + 1));
@@ -767,17 +767,17 @@ void Controller::gameInstantiation()
 		lineCount += ConsoleFormat::printEmptyLineWall();
 		cin >> playerName;
 
-		Session::getInstance().addPlayer(playerName);
+		Session::getInstance()->addPlayer(playerName);
 
 	}
 
 
-	Session::getInstance().initializeHands(new vector<string>);
+	Session::getInstance()->initializeHands(new vector<string>);
 
 
 
 
-	Session::getInstance().initializeInfections();
+	Session::getInstance()->initializeInfections();
 
 }
 
@@ -831,7 +831,7 @@ void Controller::playEventCards()
 	verticalLines += ConsoleFormat::printLineOfText("Which event card would you like to play?");
 
 	vector<pair<EventCard *, int>> * pairEventCardPlayerIndex = new vector<pair<EventCard *, int>>;
-	vector<Player *> * players = Session::getInstance().getPlayers();
+	vector<Player *> * players = Session::getInstance()->getPlayers();
 	int iterationNumber = 0;
 	for (int i = 0; i < players->size(); ++i) {
 		for (set<Card*>::iterator it = players->at(i)->getHand()->begin(); it != players->at(i)->getHand()->end(); ++it) {
@@ -899,7 +899,7 @@ void Controller::playEventCards()
 		// Resilient Population
 	case 3:
 
-		discardDeck = Session::getInstance().getInfectionDeck()->getDiscard();
+		discardDeck = Session::getInstance()->getInfectionDeck()->getDiscard();
 		if (discardDeck->size() == 0) {
 
 			verticalLines = display->mainScreen();
@@ -968,7 +968,7 @@ void Controller::playEventCards()
 		// Forecast
 	case 5:
 
-		forecast = Session::getInstance().getInfectionDeck()->drawForeCast();
+		forecast = Session::getInstance()->getInfectionDeck()->drawForeCast();
 
 		string numberWord;
 		for (int i = 0; i < 6; ++i) {
@@ -1070,152 +1070,152 @@ Card * Controller::cardSelection(Player * player, string message) {
 
 void Controller::regularMapInitialization()
 {
-	static Session & session = Session::getInstance();
-	session.addLocation("Atlanta", 1);
-	session.addLocation("San Francisco", 1);
-	session.addLocation("Chicago", 1);
-	session.addLocation("Montreal", 1);
-	session.addLocation("Washington", 1);
-	session.addLocation("New York", 1);
-	session.addLocation("Londres", 1);
-	session.addLocation("Madrid", 1);
-	session.addLocation("Paris", 1);
-	session.addLocation("Essen", 1);
-	session.addLocation("Saint-Petersbourg", 1);
-	session.addLocation("Milan", 1);
+	static Session * session = Session::getInstance();
+	session->addLocation("Atlanta", 1);
+	session->addLocation("San Francisco", 1);
+	session->addLocation("Chicago", 1);
+	session->addLocation("Montreal", 1);
+	session->addLocation("Washington", 1);
+	session->addLocation("New York", 1);
+	session->addLocation("Londres", 1);
+	session->addLocation("Madrid", 1);
+	session->addLocation("Paris", 1);
+	session->addLocation("Essen", 1);
+	session->addLocation("Saint-Petersbourg", 1);
+	session->addLocation("Milan", 1);
 
-	session.addLocation("Los Angeles", 2);
-	session.addLocation("Miami", 2);
-	session.addLocation("Mexico", 2);
-	session.addLocation("Bogota", 2);
-	session.addLocation("Lima", 2);
-	session.addLocation("Santiago", 2);
-	session.addLocation("Sao Paulo", 2);
-	session.addLocation("Buenos Aires", 2);
-	session.addLocation("Johannesburg", 2);
-	session.addLocation("Kinshasa", 2);
-	session.addLocation("Lagos", 2);
-	session.addLocation("Khartoum", 2);
+	session->addLocation("Los Angeles", 2);
+	session->addLocation("Miami", 2);
+	session->addLocation("Mexico", 2);
+	session->addLocation("Bogota", 2);
+	session->addLocation("Lima", 2);
+	session->addLocation("Santiago", 2);
+	session->addLocation("Sao Paulo", 2);
+	session->addLocation("Buenos Aires", 2);
+	session->addLocation("Johannesburg", 2);
+	session->addLocation("Kinshasa", 2);
+	session->addLocation("Lagos", 2);
+	session->addLocation("Khartoum", 2);
 
-	session.addLocation("Alger", 3);
-	session.addLocation("Le Caire", 3);
-	session.addLocation("Istanbul", 3);
-	session.addLocation("Moscou", 3);
-	session.addLocation("Bagdad", 3);
-	session.addLocation("Teheran", 3);
-	session.addLocation("Karachi", 3);
-	session.addLocation("Riyad", 3);
-	session.addLocation("Delhi", 3);
-	session.addLocation("Mumbai", 3);
-	session.addLocation("Calcutta", 3);
-	session.addLocation("Chennai", 3);
+	session->addLocation("Alger", 3);
+	session->addLocation("Le Caire", 3);
+	session->addLocation("Istanbul", 3);
+	session->addLocation("Moscou", 3);
+	session->addLocation("Bagdad", 3);
+	session->addLocation("Teheran", 3);
+	session->addLocation("Karachi", 3);
+	session->addLocation("Riyad", 3);
+	session->addLocation("Delhi", 3);
+	session->addLocation("Mumbai", 3);
+	session->addLocation("Calcutta", 3);
+	session->addLocation("Chennai", 3);
 
-	session.addLocation("Pekin", 4);
-	session.addLocation("Seoul", 4);
-	session.addLocation("Shanghai", 4);
-	session.addLocation("Tokyo", 4);
-	session.addLocation("Osaka", 4);
-	session.addLocation("Taipei", 4);
-	session.addLocation("Hong Kong", 4);
-	session.addLocation("Bangkok", 4);
-	session.addLocation("Manille", 4);
-	session.addLocation("Ho-Chi-Minh-Ville", 4);
-	session.addLocation("Jakarta", 4);
-	session.addLocation("Sydney", 4);
+	session->addLocation("Pekin", 4);
+	session->addLocation("Seoul", 4);
+	session->addLocation("Shanghai", 4);
+	session->addLocation("Tokyo", 4);
+	session->addLocation("Osaka", 4);
+	session->addLocation("Taipei", 4);
+	session->addLocation("Hong Kong", 4);
+	session->addLocation("Bangkok", 4);
+	session->addLocation("Manille", 4);
+	session->addLocation("Ho-Chi-Minh-Ville", 4);
+	session->addLocation("Jakarta", 4);
+	session->addLocation("Sydney", 4);
 
-	session.connectCity("San Francisco", "Tokyo", true);
-	session.connectCity("San Francisco", "Manille", true);
-	session.connectCity("Los Angeles", "Sydney", true);
-	session.connectCity("New York", "Londres", true);
-	session.connectCity("New York", "Madrid", true);
-	session.connectCity("Madrid", "Sao Paulo", true);
-	session.connectCity("Lagos", "Sao Paulo", true);
-	session.connectCity("Johannesburg", "Buenos Aires", true);
-	session.connectCity("San Francisco", "Los Angeles", true);
-	session.connectCity("San Francisco", "Chicago", true);
-	session.connectCity("Los Angeles", "Chicago", true);
-	session.connectCity("Los Angeles", "Mexico", true);
-	session.connectCity("Los Angeles", "Lima", true);
-	session.connectCity("Mexico", "Lima", true);
-	session.connectCity("Santiago", "Lima", true);
-	session.connectCity("Bogota", "Lima", true);
-	session.connectCity("Santiago", "Buenos Aires", true);
-	session.connectCity("Chicago", "Mexico", true);
-	session.connectCity("Chicago", "Atlanta", true);
-	session.connectCity("Chicago", "Montreal", true);
-	session.connectCity("Bogota", "Mexico", true);
-	session.connectCity("Miami", "Mexico", true);
-	session.connectCity("Bogota", "Miami", true);
-	session.connectCity("Bogota", "Sao Paulo", true);
-	session.connectCity("Bogota", "Buenos Aires", true);
-	session.connectCity("Sao Paulo", "Buenos Aires", true);
-	session.connectCity("Atlanta", "Washington", true);
-	session.connectCity("Atlanta", "Miami", true);
-	session.connectCity("Washington", "Miami", true);
-	session.connectCity("Washington", "Montreal", true);
-	session.connectCity("Washington", "New York", true);
-	session.connectCity("Montreal", "New York", true);
-	session.connectCity("Lagos", "Kinshasa", true);
-	session.connectCity("Lagos", "Khartoum", true);
-	session.connectCity("Khartoum", "Kinshasa", true);
-	session.connectCity("Khartoum", "Johannesburg", true);
-	session.connectCity("Kinshasa", "Johannesburg", true);
-	session.connectCity("Khartoum", "Le Caire", true);
-	session.connectCity("Londres", "Madrid", true);
-	session.connectCity("Londres", "Paris", true);
-	session.connectCity("Londres", "Essen", true);
-	session.connectCity("Paris", "Madrid", true);
-	session.connectCity("Alger", "Madrid", true);
-	session.connectCity("Alger", "Paris", true);
-	session.connectCity("Alger", "Le Caire", true);
-	session.connectCity("Alger", "Istanbul", true);
-	session.connectCity("Paris", "Essen", true);
-	session.connectCity("Paris", "Milan", true);
-	session.connectCity("Milan", "Essen", true);
-	session.connectCity("Saint-Petersbourg", "Essen", true);
-	session.connectCity("Milan", "Istanbul", true);
-	session.connectCity("Saint-Petersbourg", "Istanbul", true);
-	session.connectCity("Saint-Petersbourg", "Moscou", true);
-	session.connectCity("Le Caire", "Istanbul", true);
-	session.connectCity("Bagdad", "Istanbul", true);
-	session.connectCity("Moscou", "Istanbul", true);
-	session.connectCity("Le Caire", "Bagdad", true);
-	session.connectCity("Le Caire", "Riyad", true);
-	session.connectCity("Moscou", "Teheran", true);
-	session.connectCity("Bagdad", "Teheran", true);
-	session.connectCity("Bagdad", "Riyad", true);
-	session.connectCity("Karachi", "Riyad", true);
-	session.connectCity("Karachi", "Teheran", true);
-	session.connectCity("Karachi", "Delhi", true);
-	session.connectCity("Karachi", "Mumbai", true);
-	session.connectCity("Teheran", "Delhi", true);
-	session.connectCity("Mumbai", "Delhi", true);
-	session.connectCity("Calcutta", "Delhi", true);
-	session.connectCity("Chennai", "Delhi", true);
-	session.connectCity("Mumbai", "Chennai", true);
-	session.connectCity("Calcutta", "Chennai", true);
-	session.connectCity("Jakarta", "Chennai", true);
-	session.connectCity("Calcutta", "Bangkok", true);
-	session.connectCity("Calcutta", "Hong Kong", true);
-	session.connectCity("Pekin", "Seoul", true);
-	session.connectCity("Pekin", "Shanghai", true);
-	session.connectCity("Seoul", "Shanghai", true);
-	session.connectCity("Tokyo", "Shanghai", true);
-	session.connectCity("Taipei", "Shanghai", true);
-	session.connectCity("Hong Kong", "Shanghai", true);
-	session.connectCity("Seoul", "Tokyo", true);
-	session.connectCity("Osaka", "Tokyo", true);
-	session.connectCity("Osaka", "Taipei", true);
-	session.connectCity("Hong Kong", "Taipei", true);
-	session.connectCity("Manille", "Taipei", true);
-	session.connectCity("Hong Kong", "Manille", true);
-	session.connectCity("Hong Kong", "Bangkok", true);
-	session.connectCity("Hong Kong", "Ho-Chi-Minh-Ville", true);
-	session.connectCity("Bangkok", "Ho-Chi-Minh-Ville", true);
-	session.connectCity("Jakarta", "Ho-Chi-Minh-Ville", true);
-	session.connectCity("Manille", "Ho-Chi-Minh-Ville", true);
-	session.connectCity("Jakarta", "Bangkok", true);
-	session.connectCity("Jakarta", "Sydney", true);
-	session.connectCity("Manille", "Sydney", true);
+	session->connectCity("San Francisco", "Tokyo", true);
+	session->connectCity("San Francisco", "Manille", true);
+	session->connectCity("Los Angeles", "Sydney", true);
+	session->connectCity("New York", "Londres", true);
+	session->connectCity("New York", "Madrid", true);
+	session->connectCity("Madrid", "Sao Paulo", true);
+	session->connectCity("Lagos", "Sao Paulo", true);
+	session->connectCity("Johannesburg", "Buenos Aires", true);
+	session->connectCity("San Francisco", "Los Angeles", true);
+	session->connectCity("San Francisco", "Chicago", true);
+	session->connectCity("Los Angeles", "Chicago", true);
+	session->connectCity("Los Angeles", "Mexico", true);
+	session->connectCity("Los Angeles", "Lima", true);
+	session->connectCity("Mexico", "Lima", true);
+	session->connectCity("Santiago", "Lima", true);
+	session->connectCity("Bogota", "Lima", true);
+	session->connectCity("Santiago", "Buenos Aires", true);
+	session->connectCity("Chicago", "Mexico", true);
+	session->connectCity("Chicago", "Atlanta", true);
+	session->connectCity("Chicago", "Montreal", true);
+	session->connectCity("Bogota", "Mexico", true);
+	session->connectCity("Miami", "Mexico", true);
+	session->connectCity("Bogota", "Miami", true);
+	session->connectCity("Bogota", "Sao Paulo", true);
+	session->connectCity("Bogota", "Buenos Aires", true);
+	session->connectCity("Sao Paulo", "Buenos Aires", true);
+	session->connectCity("Atlanta", "Washington", true);
+	session->connectCity("Atlanta", "Miami", true);
+	session->connectCity("Washington", "Miami", true);
+	session->connectCity("Washington", "Montreal", true);
+	session->connectCity("Washington", "New York", true);
+	session->connectCity("Montreal", "New York", true);
+	session->connectCity("Lagos", "Kinshasa", true);
+	session->connectCity("Lagos", "Khartoum", true);
+	session->connectCity("Khartoum", "Kinshasa", true);
+	session->connectCity("Khartoum", "Johannesburg", true);
+	session->connectCity("Kinshasa", "Johannesburg", true);
+	session->connectCity("Khartoum", "Le Caire", true);
+	session->connectCity("Londres", "Madrid", true);
+	session->connectCity("Londres", "Paris", true);
+	session->connectCity("Londres", "Essen", true);
+	session->connectCity("Paris", "Madrid", true);
+	session->connectCity("Alger", "Madrid", true);
+	session->connectCity("Alger", "Paris", true);
+	session->connectCity("Alger", "Le Caire", true);
+	session->connectCity("Alger", "Istanbul", true);
+	session->connectCity("Paris", "Essen", true);
+	session->connectCity("Paris", "Milan", true);
+	session->connectCity("Milan", "Essen", true);
+	session->connectCity("Saint-Petersbourg", "Essen", true);
+	session->connectCity("Milan", "Istanbul", true);
+	session->connectCity("Saint-Petersbourg", "Istanbul", true);
+	session->connectCity("Saint-Petersbourg", "Moscou", true);
+	session->connectCity("Le Caire", "Istanbul", true);
+	session->connectCity("Bagdad", "Istanbul", true);
+	session->connectCity("Moscou", "Istanbul", true);
+	session->connectCity("Le Caire", "Bagdad", true);
+	session->connectCity("Le Caire", "Riyad", true);
+	session->connectCity("Moscou", "Teheran", true);
+	session->connectCity("Bagdad", "Teheran", true);
+	session->connectCity("Bagdad", "Riyad", true);
+	session->connectCity("Karachi", "Riyad", true);
+	session->connectCity("Karachi", "Teheran", true);
+	session->connectCity("Karachi", "Delhi", true);
+	session->connectCity("Karachi", "Mumbai", true);
+	session->connectCity("Teheran", "Delhi", true);
+	session->connectCity("Mumbai", "Delhi", true);
+	session->connectCity("Calcutta", "Delhi", true);
+	session->connectCity("Chennai", "Delhi", true);
+	session->connectCity("Mumbai", "Chennai", true);
+	session->connectCity("Calcutta", "Chennai", true);
+	session->connectCity("Jakarta", "Chennai", true);
+	session->connectCity("Calcutta", "Bangkok", true);
+	session->connectCity("Calcutta", "Hong Kong", true);
+	session->connectCity("Pekin", "Seoul", true);
+	session->connectCity("Pekin", "Shanghai", true);
+	session->connectCity("Seoul", "Shanghai", true);
+	session->connectCity("Tokyo", "Shanghai", true);
+	session->connectCity("Taipei", "Shanghai", true);
+	session->connectCity("Hong Kong", "Shanghai", true);
+	session->connectCity("Seoul", "Tokyo", true);
+	session->connectCity("Osaka", "Tokyo", true);
+	session->connectCity("Osaka", "Taipei", true);
+	session->connectCity("Hong Kong", "Taipei", true);
+	session->connectCity("Manille", "Taipei", true);
+	session->connectCity("Hong Kong", "Manille", true);
+	session->connectCity("Hong Kong", "Bangkok", true);
+	session->connectCity("Hong Kong", "Ho-Chi-Minh-Ville", true);
+	session->connectCity("Bangkok", "Ho-Chi-Minh-Ville", true);
+	session->connectCity("Jakarta", "Ho-Chi-Minh-Ville", true);
+	session->connectCity("Manille", "Ho-Chi-Minh-Ville", true);
+	session->connectCity("Jakarta", "Bangkok", true);
+	session->connectCity("Jakarta", "Sydney", true);
+	session->connectCity("Manille", "Sydney", true);
 
 }

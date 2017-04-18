@@ -1,8 +1,18 @@
 #include "GameStateVar.h"
-
+#include "Session.h"
 
 
 GameStateVar::GameStateVar()
+{
+	constructGameState();
+}
+
+
+GameStateVar::~GameStateVar()
+{
+}
+
+void GameStateVar::constructGameState()
 {
 	this->blue = 24;
 	this->yellow = 24;
@@ -23,16 +33,16 @@ GameStateVar::GameStateVar()
 	this->researchCenterCounter = 0;
 }
 
-
-GameStateVar::~GameStateVar()
-{
-}
-
-GameStateVar & GameStateVar::getInstance()
+GameStateVar * GameStateVar::getInstance()
 {
 	static GameStateVar * instance = new GameStateVar();
 
-	return *instance;
+	return instance;
+}
+
+void GameStateVar::reset()
+{
+	constructGameState();
 }
 
 int GameStateVar::getResearchCenterCounter()
@@ -302,5 +312,46 @@ int GameStateVar::getDisease(int region) {
 	case 4:
 		return red;
 	}
+}
 
+bool GameStateVar::isGameWon() {
+	bool answer = false;
+	if (Session::getInstance()->getNumberOfLocations(1) > 0) {
+		answer = blueCure;
+		if (!answer) {
+			return false;
+		}
+	}
+	if (Session::getInstance()->getNumberOfLocations(2) > 0) {
+		answer = yellowCure;
+		if (!answer) {
+			return false;
+		}
+	}
+	if (Session::getInstance()->getNumberOfLocations(3) > 0) {
+		answer = blackCure;
+		if (!answer) {
+			return false;
+		}
+	}
+	if (Session::getInstance()->getNumberOfLocations(4) > 0) {
+		answer = redCure;
+		if (!answer) {
+			return false;
+		}
+	}
+	return true;
+
+}
+
+bool GameStateVar::isGameLost() {
+	return eclosionCounter == 8 ||
+		blue == 0 ||
+		yellow == 0 ||
+		black == 0 ||
+		red == 0;
+}
+
+bool GameStateVar::isGameOver() {
+	return this->isGameWon() || this->isGameLost();
 }

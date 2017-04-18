@@ -158,7 +158,7 @@ void City::setResearchCenter(const bool research)
 	// If there is a research center built, we loop through the cities with a research center and connect them to this new city. Then we add the new city to the list of research center cities.
 	if (research && !temp) {
 		if (this->researchCities->size() > 0) {
-			GameStateVar::getInstance().incrementResearchCenterCounter();
+			GameStateVar::getInstance()->incrementResearchCenterCounter();
 			for (unsigned i = 0; i < this->researchCities->size(); ++i) {
 				connect(this->researchCities->at(i), this, RESEARCH_CONNECTION);
 			}
@@ -309,19 +309,19 @@ void City::decrementDisease(int color)
 	switch (color) {
 	case 1:
 		--blueDisease;
-		GameStateVar::getInstance().incrementCube(color);
+		GameStateVar::getInstance()->incrementCube(color);
 		break;
 	case 2:
 		--yellowDisease;
-		GameStateVar::getInstance().incrementCube(color);
+		GameStateVar::getInstance()->incrementCube(color);
 		break;
 	case 3:
 		--blackDisease;
-		GameStateVar::getInstance().incrementCube(color);
+		GameStateVar::getInstance()->incrementCube(color);
 		break;
 	case 4:
 		--redDisease;
-		GameStateVar::getInstance().incrementCube(color);
+		GameStateVar::getInstance()->incrementCube(color);
 		break;
 	}
 }
@@ -350,7 +350,7 @@ void City::displayInfo()
 bool City::infect(unordered_map<string, City *> * city, int color, vector<string> * log)
 {
 	// If a cube of the color is available, we go in. Else, we return false and the game ends.
-	if (GameStateVar::getInstance().decrementCube(color, log)) {
+	if (GameStateVar::getInstance()->decrementCube(color, log)) {
 
 		// Here we try to increment the value of the disease. If there are already 3 cubes of the color we want to increase,
 		// we return false and create an eclosion.
@@ -363,7 +363,7 @@ bool City::infect(unordered_map<string, City *> * city, int color, vector<string
 		else {
 			log->push_back("Eclosion in " + location->getName());
 			// Since we have an eclosion, we call the incrementInclosion method of the GameStateVar class.
-			GameStateVar::getInstance().incrementEclosion(log);
+			GameStateVar::getInstance()->incrementEclosion(log);
 			// First we put our city in the hashmap passed as a param. The idea is that we don't two cities to keep triggering each other.
 			// Once a city has had an eclosion, it is immune from the chain effect.
 			city->emplace(this->getName(), this);

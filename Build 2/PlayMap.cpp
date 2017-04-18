@@ -44,6 +44,7 @@ map<Location *, City*, compareMap>* PlayMap::getPlayMap()
 // Simple interface implemented so that we can demonstrate the different functions of the classes in the main.
 void PlayMap::clearPlayMap()
 {
+	origin = nullptr;
 	this->playMap->clear();
 }
 

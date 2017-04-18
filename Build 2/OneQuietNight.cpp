@@ -13,5 +13,5 @@ OneQuietNight::~OneQuietNight()
 
 
 void OneQuietNight::execute() {
-	GameStateVar::getInstance().setOneQuietNight(true);
+	GameStateVar::getInstance()->setOneQuietNight(true);
 }
