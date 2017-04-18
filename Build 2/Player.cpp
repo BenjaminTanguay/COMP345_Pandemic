@@ -9,7 +9,9 @@ Player::Player(string name, City * origin)
 {
 	static int numberOfPlayers;
 	++numberOfPlayers;
+	
 	static vector<int> array;
+	
 	if (numberOfPlayers == 1) {
 		for (unsigned i = 1; i < 8; ++i) {
 			array.push_back(i);
@@ -17,6 +19,7 @@ Player::Player(string name, City * origin)
 	}
 	std::mt19937 randomSeed{ std::random_device{}() };
 	shuffle(array.begin(), array.end(), randomSeed);
+	
 	this->playerName = name;
 	this->hand = new set<Card *, compareSet>;
 	playerId = numberOfPlayers;
@@ -160,7 +163,7 @@ string Player::treatDisease(int type)
 		medicDone = true;
 	}
 	this->getCity()->decrementDisease(type);
-	} while (this->getRole == 5 && !medicDone);
+	} while (this->getRole() == 5 && !medicDone);
 	--actionPoints;
 	return this->getCity()->diseaseTranslate(type) + " in " + this->getCity()->getName() + " is now at " + to_string(this->getCity()->getDisease(type));
 }
@@ -176,16 +179,29 @@ string Player::shareKnowledge(CityCard * card, Player * player)
 	if (getCity() != player->getCity()) {
 		return "You need to be in the same city as the other player to share knowledge";
 	}
-	if (card->getLocation() != player->getCity()->getLocation()) {
-		return "You need to be in the city represented by the card in order to share knowledge of that card";
+	if (this->getRole() != RESEARCHER && player->getRole() != RESEARCHER) {
+		if (card->getLocation() != player->getCity()->getLocation()) {
+			return "You need to be in the city represented by the card in order to share knowledge of that card";
+		}
 	}
+
 	if (handContains(card)) {
+		if (this->getRole() != RESEARCHER) {
+			if (card->getLocation() != player->getCity()->getLocation()) {
+				return "You need to be in the city represented by the card in order to share knowledge of that card";
+			}
+		}
 		hand->erase(card);
 		player->getHand()->emplace(card);
 		--actionPoints;
 		return "Card successfully traded from " + playerName + " to " + player->getPlayerName();
 	}
 	if (player->handContains(card)) {
+		if (player->getRole() != RESEARCHER) {
+			if (card->getLocation() != player->getCity()->getLocation()) {
+				return "You need to be in the city represented by the card in order to share knowledge of that card";
+			}
+		}
 		hand->emplace(card);
 		player->getHand()->erase(card);
 		--actionPoints;
@@ -212,7 +228,7 @@ string Player::discoverCure(CityCard * card1, CityCard * card2, CityCard * card3
 		discardCard(card2);
 		discardCard(card3);
 		discardCard(card4);
-		if(this->getPlayerRole != 5)
+		if(this->getRole() != 5)
 		discardCard(card5);
 		GameStateVar::getInstance()->setCure(card1->getLocation()->getRegion());
 		return getCity()->diseaseTranslate(card1->getLocation()->getRegion()) + " cured!";
@@ -268,6 +284,24 @@ string Player::getPlayerRole() {
 		return "Scientist";
 	default:
 		return "";
+	}
+}
+
+bool Player::handContainsTypeCard(int typeCard) {
+	
+	for (auto iterate = hand->begin(); iterate != hand->end(); ++iterate) {
+		switch (typeCard) {
+		case eventCard:
+			if (dynamic_cast<EventCard *>((*iterate)) != nullptr) {
+				return true;
+			}
+			break;
+		case cityCard:
+			if (dynamic_cast<CityCard *>((*iterate)) != nullptr) {
+				return true;
+			}
+			break;
+		}
 	}
 }
 

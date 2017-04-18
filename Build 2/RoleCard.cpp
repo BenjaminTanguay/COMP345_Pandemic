@@ -59,18 +59,18 @@ ContigencyPlanner::ContigencyPlanner() {
 OperationExpert::OperationExpert() {
 	this->name = "Operations Expert";
 	this->description->push_back("The Operations Expert may, as an action, either:");
-	this->description->push_back("• build a research station in his current city");
+	this->description->push_back("- build a research station in his current city");
 	this->description->push_back("without discarding(or using) a City card, or ");
-	this->description->push_back("• once per turn, move from a research station to any city");
+	this->description->push_back("- once per turn, move from a research station to any city");
 	this->description->push_back("by discarding any City card.");
 }
 
 Dispatcher::Dispatcher() {
 	this->name = "Dispatcher";
 	this->description->push_back("The Dispatcher may, as an action, either:");
-	this->description->push_back("• move any pawn, if its owner agrees, to any city");
+	this->description->push_back("- move any pawn, if its owner agrees, to any city");
 	this->description->push_back("containing another pawn, or ");
-	this->description->push_back("• move another players pawn, if its owner agrees,");
+	this->description->push_back("- move another players pawn, if its owner agrees,");
 	this->description->push_back("as if it were his own, discarding your own cards.");
 }
 

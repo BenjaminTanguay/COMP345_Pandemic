@@ -613,8 +613,67 @@ void Controller::shareKnowledge()
 
 		int selectedPlayerIndex = inputCheck(1, players->size()) - 1;
 
+		Player * targetPlayer = players->at(selectedPlayerIndex);
 
-		Session::getInstance()->shareKnowledge(Session::getInstance()->getCityCards(currentPlayer->getCity()->getName()), players->at(selectedPlayerIndex));
+		if (currentPlayer->getRole() != 5 && targetPlayer->getRole() != 5) {
+			Session::getInstance()->shareKnowledge(Session::getInstance()->getCityCards(currentPlayer->getCity()->getName()), targetPlayer);
+		}
+		else {
+
+
+			vector<CityCard *> * cards = new vector<CityCard *>;
+			int iterationNumber = 1;
+			
+
+
+			// If the current player is the researcher, he can trade whatever city card he has.
+			if (currentPlayer->getRole() == Player::RESEARCHER && (currentPlayer->handContainsTypeCard(Player::typeCard::cityCard) || targetPlayer->handContains(Session::getInstance()->getCityCards(targetPlayer->getCity()->getName())))) {
+				verticalLines = display->mainScreen();
+				verticalLines += ConsoleFormat::printEmptyLineWall();
+				verticalLines += ConsoleFormat::printLineOfText("Which card would you like to share?");
+				for (auto iterate = currentPlayer->getHand()->begin(); iterate != currentPlayer->getHand()->end(); ++iterate, ++iterationNumber) {
+					if (dynamic_cast<CityCard *>((*iterate)) != nullptr) {
+						cards->push_back(dynamic_cast<CityCard *>((*iterate)));
+						verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + dynamic_cast<CityCard *>((*iterate))->getLocation()->getName());
+					}
+				}
+				Card * card = Session::getInstance()->getCityCards(targetPlayer->getCity()->getName());
+				// If the target player has a card that matches the city he's on, we need to add it as well
+				if (targetPlayer->handContains(card)) {
+					cards->push_back(dynamic_cast<CityCard *>(card));
+					verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + dynamic_cast<CityCard *>(card)->getLocation()->getName());
+				}
+			}
+			// Same principle as above but inversed roles
+			else if (targetPlayer->getRole() == Player::RESEARCHER && (targetPlayer->handContainsTypeCard(Player::typeCard::cityCard) || currentPlayer->handContains(Session::getInstance()->getCityCards(currentPlayer->getCity()->getName())))) {
+				verticalLines = display->mainScreen();
+				verticalLines += ConsoleFormat::printEmptyLineWall();
+				verticalLines += ConsoleFormat::printLineOfText("Which card would you like to share?");
+				for (auto iterate = targetPlayer->getHand()->begin(); iterate != targetPlayer->getHand()->end(); ++iterate, ++iterationNumber) {
+					if (dynamic_cast<CityCard *>((*iterate)) != nullptr) {
+						cards->push_back(dynamic_cast<CityCard *>((*iterate)));
+						verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + dynamic_cast<CityCard *>((*iterate))->getLocation()->getName());
+					}
+				}
+				Card * card = Session::getInstance()->getCityCards(currentPlayer->getCity()->getName());
+				if (currentPlayer->handContains(card)) {
+					cards->push_back(dynamic_cast<CityCard *>(card));
+					verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + dynamic_cast<CityCard *>(card)->getLocation()->getName());
+				}
+			}
+			else {
+				verticalLines = display->mainScreen();
+				verticalLines += ConsoleFormat::printEmptyLineWall();
+				verticalLines += ConsoleFormat::printLineOfText("Can't share because the hand is empty or the players don't have the city card of the location they are currently in.");
+				verticalLines += ConsoleFormat::printEmptyLineWall();
+			}
+			display->completeBottomWidget(verticalLines);
+
+			int userInput = inputCheck(1, cards->size()) - 1;
+			Session::getInstance()->shareKnowledge(cards->at(userInput), targetPlayer);
+		}
+
+
 		handSizeCheck(currentPlayer);
 		handSizeCheck(players->at(selectedPlayerIndex));
 
@@ -1060,21 +1119,28 @@ void Controller::playRole()
 {
 	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	vector<Player *> * players = Session::getInstance()->getPlayers();
+	vector<Card *> * vec;
 	int verticalLines = display->mainScreen();
 	verticalLines += ConsoleFormat::printEmptyLineWall();
+	int userInput = 0;
+	int iterationNumber = 0;
 
 	display->completeBottomWidget(verticalLines);
 	switch (currentPlayer->getRole()) {
-		;//playrole
+		//playrole
+	//Contingency planner
 	case 1:
-		vector<Card *> * vec = PlayEventCardController::getDiscard();
-		int iterationNumber = 1;
+		vec = PlayEventCardController::getDiscard();
+		iterationNumber = 1;
 		for (auto iterate = vec->begin(); iterate != vec->end(); ++iterate, ++iterationNumber) {
 			verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + to_string(dynamic_cast<EventCard *>(vec->at(iterationNumber - 1))->getEventId()));
 		}
 		verticalLines += ConsoleFormat::printLineOfText("Choose a contingency card");
-		int userInput = inputCheck(1, vec->size());
+		userInput = inputCheck(1, vec->size());
+
+		vec = nullptr;
 		break;
+	// Operation expert
 	case 2:
 		bool handContainsCityCard;
 		for (auto iterate = currentPlayer->getHand()->begin(); iterate != currentPlayer->getHand()->end(); ++iterate) {
@@ -1088,7 +1154,7 @@ void Controller::playRole()
 		if (handContainsCityCard) {
 			int verticalLines = display->mainScreen();
 			verticalLines += ConsoleFormat::printEmptyLineWall();
-			verticalLines += ConsoleFormat::printLineOfText("Which city would you like to discard?");
+			verticalLines += ConsoleFormat::printLineOfText("Which city card would you like to discard?");
 			vector<Card *> * listOfCards = new vector<Card *>;
 			int iterationNumber = 1;
 			for (set<Card*>::iterator it = currentPlayer->getHand()->begin(); it != currentPlayer->getHand()->end(); it++, ++iterationNumber) {
@@ -1098,7 +1164,7 @@ void Controller::playRole()
 				}
 			}
 			display->completeBottomWidget(verticalLines);
-			int userInput = inputCheck(1, listOfCards->size());
+			userInput = inputCheck(1, listOfCards->size());
 			
 			Session::getInstance()->move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)), currentPlayer);
 			delete listOfCards;
@@ -1106,18 +1172,23 @@ void Controller::playRole()
 		}
 		
 		break;
+	// Dispatcher
 	case 3:
 		playerMove(choseAPlayer());
 		break;
+	// Quarantine specialist
 	case 4:
 
 		break;
+	// Researcher
 	case 5:
 
 		break;
+	// Medic
 	case 6:
 
 		break;
+	// Scientist
 	case 7:
 
 		break;
@@ -1137,19 +1208,14 @@ Player * Controller::choseAPlayer() {
 
 	Player * chosenPlayer;
 	bool consent = false;
-	bool wrongChoice = false;
 
 	for (int x = 1; x <= players->size(); ++x) {// chose anotherplayer to control
-		if (currentPlayer->getPlayerId() != players->at(x - 1)->getPlayerId()) {
-			verticalLines += ConsoleFormat::printLineOfText(to_string(x) + ". " + players->at(x - 1)->getPlayerName());
-		}
+		verticalLines += ConsoleFormat::printLineOfText(to_string(x) + ". " + players->at(x - 1)->getPlayerName());
 	}
 	do {
 		verticalLines += ConsoleFormat::printLineOfText("Chose a player to control.");
 		int userInput = inputCheck(1, players->size());
 		chosenPlayer = players->at(userInput - 1);
-		if (currentPlayer->getPlayerId() == chosenPlayer->getPlayerId())
-			wrongChoice = true;
 		verticalLines += ConsoleFormat::printLineOfText("Does player " + chosenPlayer->getPlayerName() + " consent?");
 		verticalLines += ConsoleFormat::printEmptyLineWall();
 		verticalLines += ConsoleFormat::printLineOfText("1. yes");
@@ -1157,10 +1223,9 @@ Player * Controller::choseAPlayer() {
 		userInput = inputCheck(1, 2);
 		if (userInput == 1)
 			consent = true;
-	} while (!consent || wrongChoice);
+	} while (!consent);
 	//delete  players;
-	//delete currentPlayer;
-	//currentPlayer = nullptr;
+	currentPlayer = nullptr;
 	//players = nullptr;
 	return chosenPlayer;
 

@@ -479,29 +479,12 @@ void Session::consultReference() {
 }
 
 void Session::consultRoleCard() {
-	switch (players->at(currentPlayer)->getRole()) {
-	case 1:
-		Notify(players->at(currentPlayer)->getRoleDescription());
-		break;
-	case 2:
-		Notify(players->at(currentPlayer)->getRoleDescription());
-		break;
-	case 3:
-		Notify(players->at(currentPlayer)->getRoleDescription());
-		break;
-	case 4:
-		Notify(players->at(currentPlayer)->getRoleDescription());
-		break;
-	case 5:
-		Notify(players->at(currentPlayer)->getRoleDescription());
-		break;
-	case 6:
-		Notify(players->at(currentPlayer)->getRoleDescription());
-		break;
-	case 7:
-		Notify(players->at(currentPlayer)->getRoleDescription());
-		break;
+	vector<string> * log = new vector<string>;
+	for (int i = 0; i < players->at(currentPlayer)->getRoleDescription()->size(); ++i) {
+		log->push_back(players->at(currentPlayer)->getRoleDescription()->at(i));
 	}
+	Notify(log);
+	log = nullptr;
 }
 
 void Session::addEventCards(EventCard * card)

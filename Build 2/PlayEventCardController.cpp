@@ -1,5 +1,12 @@
 #include "PlayEventCardController.h"
 
+bool PlayEventCardController::contingency = false;
+vector<Card *> * PlayEventCardController::contingencyList = new vector<Card *>;
+int PlayEventCardController::contingencyCurrent = 0;
+vector<Card *> * PlayEventCardController::discard = new vector<Card *>;
+
+
+
 void PlayEventCardController::play(CommandActionCards * command, Player * player, Card * card)
 {
 	player->discardCard(card);

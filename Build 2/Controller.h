@@ -16,6 +16,7 @@ private:
 		game = 2
 	};
 
+
 	void regularMapInitialization();
 	
 	void diseaseModification(int region, vector<string>* log, int lineCount, City * currentCity);

@@ -1,4 +1,5 @@
 #include "City.h"
+#include "Session.h"
 using namespace std;
 
 // Assigning the static variable for the class.
@@ -348,8 +349,34 @@ void City::displayInfo()
 		<< "Red disease: " << this->redDisease << endl << endl;
 }
 
+bool City::quarantineCity() {
+	for (int i = 0; i < players.size(); ++i) {
+		if (players.at(i)) {
+			if (Session::getInstance()->getPlayers()->at(i)->getRole() == Player::CONTINGENCY_PLANNER) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool City::quarantineZone() {
+	for (auto iterator = connections->begin(); iterator != connections->end(); ++iterator) {
+		if (iterator->second->quarantineCity()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 bool City::infect(unordered_map<string, City *> * city, int color, vector<string> * log)
 {
+	if (this->quarantineZone()) {
+		return true;
+	}
+
+
 	// If a cube of the color is available, we go in. Else, we return false and the game ends.
 	if (GameStateVar::getInstance()->decrementCube(color, log)) {
 

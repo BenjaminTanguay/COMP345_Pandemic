@@ -118,6 +118,10 @@ public:
 	// Used to demo the city object.
 	void displayInfo();
 
+	bool quarantineCity();
+
+	bool quarantineZone();
+
 	bool infect(unordered_map<string, City *> * city, int color, vector<string> * log);
 
 	int getPlayer();

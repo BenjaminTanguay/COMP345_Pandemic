@@ -117,6 +117,11 @@ public:
 	static const int MEDIC = 6;
 	static const int SCIENTIST = 7;
 
+	const enum typeCard {
+		eventCard = 1,
+		cityCard = 2
+	};
+
 
 	static ReferenceCard reference;
 
@@ -141,6 +146,8 @@ public:
 	string getPlayerName();
 
 	string getPlayerRole();
+
+	bool handContainsTypeCard(int typeCard);
 
 	City * getCity();
 
