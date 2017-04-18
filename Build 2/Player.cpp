@@ -135,7 +135,7 @@ string Player::build(CityCard * card, City * city)
 		return "You do not have the card for " + getCity()->getName() + " in your hand";
 	}
 	// if we have 6 research stations than one must be moved in order to build a new one, verified with gamestate and the listed city is not the same as the desired build site.
-	if (GameStateVar::getInstance().getResearchCenterCounter() == 6 && City::getResearchCitiesList()->size() == 6 && city->getLocation() != card->getLocation()) {
+	if (GameStateVar::getInstance()->getResearchCenterCounter() == 6 && City::getResearchCitiesList()->size() == 6 && city->getLocation() != card->getLocation()) {
 		city->setResearchCenter(false);
 		exception = "Maximum number of research centers (6) reached, research station at " + city->getName() + " will be moved.";
 	}
@@ -209,7 +209,7 @@ string Player::discoverCure(CityCard * card1, CityCard * card2, CityCard * card3
 		discardCard(card3);
 		discardCard(card4);
 		discardCard(card5);
-		GameStateVar::getInstance().setCure(card1->getLocation()->getRegion());
+		GameStateVar::getInstance()->setCure(card1->getLocation()->getRegion());
 		return getCity()->diseaseTranslate(card1->getLocation()->getRegion()) + " cured!";
 	}
 	else {
@@ -312,7 +312,7 @@ void Player::refreshActions()
 
 inline void Player::discardCard(Card * card) {
 	hand->erase(card);
-	Session::getInstance().getPlayerDeck()->toDiscard(card);
+	Session::getInstance()->getPlayerDeck()->toDiscard(card);
 }
 
 

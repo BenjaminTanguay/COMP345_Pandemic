@@ -95,9 +95,10 @@ private:
 
 public:
 
-	static Session & getInstance();
+	static Session * getInstance();
 	static Session & getInstance(City * origin);
 
+	void resetSession();
 
 	// Getters and setters
 	City * getOrigin();

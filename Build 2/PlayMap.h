@@ -42,10 +42,10 @@ public:
 	static PlayMap * getInstance(City * origin);
 	~PlayMap();
 
-	void PlayMap::clearPlayMap();
-	void PlayMap::addResearchCenter(Location * city);
-	void PlayMap::setOrigin(Location * city);
-	void PlayMap::setNewOrigin(Location * loc, bool researchCenter);
+	void clearPlayMap();
+	void addResearchCenter(Location * city);
+	void setOrigin(Location * city);
+	void setNewOrigin(Location * loc, bool researchCenter);
 
 	map<Location *, City *, compareMap> * getPlayMap();
 	City * PlayMap::getOrigin();
@@ -55,8 +55,8 @@ public:
 
 	bool maxNumberOfResearchCenterCheck();
 
-	bool PlayMap::savePlayMap(string fileName);
-	bool PlayMap::loadPlayMap(string fileName);
+	bool savePlayMap(string fileName);
+	bool loadPlayMap(string fileName);
 	bool minimumNumberOfCities();
 
 };

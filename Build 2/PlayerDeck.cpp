@@ -37,7 +37,7 @@ void PlayerDeck::initialize()
 	for (unsigned i = 1; i < 6; ++i) {
 		eventCard = new EventCard(i);
 		this->add(eventCard);
-		Session::getInstance().addEventCards(eventCard);
+		Session::getInstance()->addEventCards(eventCard);
 	}
 
 	std::mt19937 randomSeed{ std::random_device{}() };

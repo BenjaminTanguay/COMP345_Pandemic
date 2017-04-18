@@ -33,7 +33,7 @@ int PercentInfectedCityStatisticsDecorator::getStatistics(int line)
 	else if (line == statistics->getNumberOfLines()) {
 		ConsoleFormat::setColor(ConsoleFormat::lgrey, ConsoleFormat::black);
 		stringstream ss;
-		ss << std::fixed << std::setprecision(1) << ((double)Statistics::getNumberOfDiseasedCity() / (double)Session::getInstance().getPlayMap()->size()) * 100;
+		ss << std::fixed << std::setprecision(1) << ((double)Statistics::getNumberOfDiseasedCity() / (double)Session::getInstance()->getPlayMap()->size()) * 100;
 		std::string percentage = ss.str();
 		ConsoleFormat::makeBox(16, "Infected:", percentage + "%", 6);
 	}

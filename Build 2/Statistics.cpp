@@ -15,7 +15,7 @@ int Statistics::getNumberOfDiseasedCity()
 
 int Statistics::getNumberOfCardsInPlayerHand(int playerId, int region, int cardType)
 {
-	Player * player = Session::getInstance().getPlayers()->at(playerId);
+	Player * player = Session::getInstance()->getPlayers()->at(playerId);
 	int numberOfCards = 0;
 	for (auto iterate = player->getHand()->begin(); iterate != player->getHand()->end(); ++iterate) {
 		switch (cardType) {
@@ -40,18 +40,17 @@ int Statistics::getNumberOfCardsInPlayerHand(int playerId, int region, int cardT
 vector<string>* Statistics::getHandSize()
 {
 	vector<string> * handSize = new vector<string>;
-	for (int i = 0; i < Session::getInstance().getPlayers()->size(); ++i) {
-		handSize->push_back(to_string(Session::getInstance().getPlayers()->at(i)->getHand()->size()));
+	for (int i = 0; i < Session::getInstance()->getPlayers()->size(); ++i) {
+		handSize->push_back(to_string(Session::getInstance()->getPlayers()->at(i)->getHand()->size()));
 	}
 	return handSize;
 }
 
 int Statistics::getNumberOfDiseaseOnMap()
 {
-	GameStateVar & gameState = GameStateVar::getInstance();
 	int numberOfCubes = 0;
-	for (int i = 0; i < Session::getInstance().getNumberOfRegionInPlay(); ++i) {
-		numberOfCubes += 24 - GameStateVar::getInstance().getDisease(i + 1);
+	for (int i = 0; i < Session::getInstance()->getNumberOfRegionInPlay(); ++i) {
+		numberOfCubes += 24 - GameStateVar::getInstance()->getDisease(i + 1);
 	}
 	return numberOfCubes;
 }
@@ -59,9 +58,9 @@ int Statistics::getNumberOfDiseaseOnMap()
 int Statistics::getNumberOfCardsInDeck(int region, int cardType) {
 	switch (cardType) {
 	case cityCard:
-		return Session::getInstance().getPlayerDeck()->getRegionCard(region);
+		return Session::getInstance()->getPlayerDeck()->getRegionCard(region);
 	case eventCard:
-		return Session::getInstance().getPlayerDeck()->getEventCards();
+		return Session::getInstance()->getPlayerDeck()->getEventCards();
 	default:
 		return 0;
 	}
@@ -69,7 +68,7 @@ int Statistics::getNumberOfCardsInDeck(int region, int cardType) {
 
 vector<string> * Statistics::getNumberOfPlayerCardsRemainingInDeck() {
 	vector<string> * data = new vector<string>;
-	for (int i = 1; i <= Session::getInstance().getNumberOfRegionInPlay(); ++i) {
+	for (int i = 1; i <= Session::getInstance()->getNumberOfRegionInPlay(); ++i) {
 		data->push_back(to_string(getNumberOfCardsInDeck(i, cityCard)));
 	}
 	return data;
@@ -106,7 +105,7 @@ int Statistics::getStatistics(int line)
 		ConsoleFormat::makeBox(20, "Hand size:");
 		break;
 	case 4:
-		ConsoleFormat::printMultipleColorBoxWithData(24, Session::getInstance().getPlayers()->size(), getHandSize(), ConsoleFormat::player);
+		ConsoleFormat::printMultipleColorBoxWithData(24, Session::getInstance()->getPlayers()->size(), getHandSize(), ConsoleFormat::player);
 		break;
 	case 5:
 		ConsoleFormat::makeBox(19, "Disease on map:", to_string(getNumberOfDiseaseOnMap()), 3);
@@ -115,7 +114,7 @@ int Statistics::getStatistics(int line)
 		ConsoleFormat::makeBox(20, "CityCards in deck:");
 		break;
 	case 7:
-		ConsoleFormat::printMultipleColorBoxWithData(24, Session::getInstance().getNumberOfRegionInPlay(), getNumberOfPlayerCardsRemainingInDeck(), ConsoleFormat::region);
+		ConsoleFormat::printMultipleColorBoxWithData(24, Session::getInstance()->getNumberOfRegionInPlay(), getNumberOfPlayerCardsRemainingInDeck(), ConsoleFormat::region);
 		break;
 	}
 	ConsoleFormat::setColor(ConsoleFormat::black, ConsoleFormat::black);

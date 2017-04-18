@@ -1,6 +1,7 @@
 #include "Session.h"
 
 
+
 // Initialize the objects that needs to go on the heap.
 Session::Session()
 {
@@ -57,8 +58,6 @@ Session::~Session()
 	delete log;
 	log = nullptr;
 }
-
-
 
 // The origin is used to store the default location where players will begin on the play map.
 City * Session::getOrigin()
@@ -396,11 +395,28 @@ Session & Session::getInstance(City * origin)
 	return *instance;
 }
 
-Session & Session::getInstance()
+void Session::resetSession()
 {
-	static Session * instance = new Session();
+	this->numberOfRegionsInPlay = 0;
+	for (int i = 0; i < 4; ++i) {
+		numberOfLocationsPerRegion[i] = 0;
+	}
+	this->locations->clear();
+	PlayMap::getInstance()->clearPlayMap();
+	this->players->clear();
+	this->playerDeck->clear();
+	this->infectionDeck->clear();
+	this->cityCards->clear();
+	this->eventCards->clear();
+	delete log;
+	log = new Log();
+	GameStateVar::getInstance()->reset();
+}
 
-	return *instance;
+Session * Session::getInstance()
+{
+	static Session * session = new Session();
+	return session;
 }
 
 City * Session::getCity(string name) {
