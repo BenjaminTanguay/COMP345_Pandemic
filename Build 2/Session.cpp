@@ -248,7 +248,9 @@ void Session::initializeInfections()
 }
 
 bool Session::infectionDraw(vector<string> * log) {
-	return infect(infectionDeck->epidemic(), 3, infectionDeck->epidemic()->getRegion(), log);
+	Location * loc = infectionDeck->epidemic();
+	log->push_back("An epidemic breaks out in " + loc->getName());
+	return infect(loc, 3, loc->getRegion(), log);
 }
 
 bool Session::drawFromInfectionDeck(vector<string> * log) {
