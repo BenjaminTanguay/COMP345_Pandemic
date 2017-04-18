@@ -432,19 +432,19 @@ void Session::incrementCurrentPlayer()
 	currentPlayer = (currentPlayer + 1) % players->size();
 }
 
-void Session::move(City * city)
+void Session::move(City * city, Player * aPlayer)
 {
-	Notify(players->at(currentPlayer)->move(city));
+	Notify(players->at(currentPlayer)->move(city, aPlayer));
 }
 
-void Session::move(CityCard * card)
+void Session::move(CityCard * card, Player * aPlayer)
 {
-	Notify(players->at(currentPlayer)->move(card));
+	Notify(players->at(currentPlayer)->move(card, aPlayer));
 }
 
-void Session::move(CityCard * card, City * city)
+void Session::move(CityCard * card, City * city, Player * aPlayer)
 {
-	Notify(players->at(currentPlayer)->move(card, city));
+	Notify(players->at(currentPlayer)->move(card, city, aPlayer));
 }
 
 void Session::build(CityCard * card, City * city)
@@ -479,25 +479,25 @@ void Session::consultReference() {
 void Session::consultRoleCard() {
 	switch (players->at(currentPlayer)->getRole()) {
 	case 1:
-		Notify(dynamic_cast<ContigencyPlanner *> (players->at(currentPlayer)->getRoleCard())->getDescription());
+		Notify(players->at(currentPlayer)->getRoleDescription());
 		break;
 	case 2:
-		Notify(dynamic_cast<OperationExpert *> (players->at(currentPlayer)->getRoleCard())->getDescription());
+		Notify(players->at(currentPlayer)->getRoleDescription());
 		break;
 	case 3:
-		Notify(dynamic_cast<Dispatcher *> (players->at(currentPlayer)->getRoleCard())->getDescription());
+		Notify(players->at(currentPlayer)->getRoleDescription());
 		break;
 	case 4:
-		Notify(dynamic_cast<QuarantineSpecialist *> (players->at(currentPlayer)->getRoleCard())->getDescription());
+		Notify(players->at(currentPlayer)->getRoleDescription());
 		break;
 	case 5:
-		Notify(dynamic_cast<Researcher *> (players->at(currentPlayer)->getRoleCard())->getDescription());
+		Notify(players->at(currentPlayer)->getRoleDescription());
 		break;
 	case 6:
-		Notify(dynamic_cast<Medic *> (players->at(currentPlayer)->getRoleCard())->getDescription());
+		Notify(players->at(currentPlayer)->getRoleDescription());
 		break;
 	case 7:
-		Notify(dynamic_cast<Scientist *> (players->at(currentPlayer)->getRoleCard())->getDescription());
+		Notify(players->at(currentPlayer)->getRoleDescription());
 		break;
 	}
 }

@@ -6,7 +6,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "main.h"
-#include <QtWidgets/QApplication>
+//#include <QtWidgets/QApplication>
 
 using namespace std;
 

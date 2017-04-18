@@ -69,54 +69,54 @@ void Player::setLocation(City * city)
 }
 
 // Different default actions a player can have. To be implemented in subsequent interation.
-string Player::move(City * city)
+string Player::move(City * city, Player * aPlayer)
 {
 	if (actionPoints <= 0) {
 		return "Insufficient action points";
 	}
-	if (!this->getCity()->isConnected(city)) {
-		return getCity()->getName() + " and " + city->getName() + " aren't connected";
+	if (!aPlayer->getCity()->isConnected(city) && this->getPlayerId() == aPlayer->getPlayerId()) {
+		return aPlayer->getCity()->getName() + " and " + city->getName() + " aren't connected";
 	}
-	string cityName = this->getCity()->getLocation()->getName();
-	this->getCity()->setPlayer(playerId - 1, false);
-	city->setPlayer(playerId - 1, true);
-	this->pawn->setCity(city);
+	string cityName = aPlayer->getCity()->getLocation()->getName();
+	aPlayer->getCity()->setPlayer(aPlayer->getPlayerId() - 1, false);
+	city->setPlayer(aPlayer->getPlayerId() - 1, true);
+	aPlayer->pawn->setCity(city);
 	--actionPoints;
-	return playerName + " moved from " + cityName + " to city: " + city->getName();
+	return aPlayer->getPlayerName() + " moved from " + cityName + " to city: " + city->getName();
 }
 
-string Player::move(CityCard * card)
+string Player::move(CityCard * card, Player * aPlayer)
 {
 	if (actionPoints <= 0) {
 		return "Insufficient action points";
 	}
 	--actionPoints;
-	string cityName = this->getCity()->getLocation()->getName();
-	this->getCity()->setPlayer(playerId - 1, false);
+	string cityName = aPlayer->getCity()->getLocation()->getName();
+	aPlayer->getCity()->setPlayer(aPlayer->getPlayerId() - 1, false);
 	City * city = PlayMap::getInstance()->getPlayMap()->at(card->getLocation());
-	city->setPlayer(playerId - 1, true);
-	this->pawn->setCity(city);
+	city->setPlayer(aPlayer->getPlayerId() - 1, true);
+	aPlayer->pawn->setCity(city);
 	discardCard(card);
-	string data = playerName + " moved from " + cityName + " to city: " + city->getName();
+	string data = aPlayer->getPlayerName() + " moved from " + cityName + " to city: " + city->getName();
 	city = nullptr;
 	return data;
 }
 
-string Player::move(CityCard * card, City * city)
+string Player::move(CityCard * card, City * city, Player * aPlayer)
 {
 	if (actionPoints <= 0) {
 		return "Insufficient action points";
 	}
-	if (card->getLocation() != getCity()->getLocation()) {
+	if (card->getLocation() != aPlayer->getCity()->getLocation()) {
 		return "You need to possess the card of the city you are standing on in order to charter a flight";
 	}
 	--actionPoints;
-	string cityName = this->getCity()->getLocation()->getName();
-	this->getCity()->setPlayer(playerId - 1, false);
-	city->setPlayer(playerId - 1, true);
-	this->pawn->setCity(city);
-	discardCard(card);
-	return playerName + " chartered a flight to move from " + cityName + " to city: " + city->getName();
+	string cityName = aPlayer->getCity()->getLocation()->getName();
+	aPlayer->getCity()->setPlayer(aPlayer->getPlayerId() - 1, false);
+	city->setPlayer(aPlayer->getPlayerId() - 1, true);
+	aPlayer->pawn->setCity(city);
+	this->discardCard(card);
+	return aPlayer->getPlayerName() + " chartered a flight to move from " + cityName + " to city: " + city->getName();
 }
 
 string Player::build(CityCard * card, City * city)
@@ -303,6 +303,10 @@ int Player::getRole()
 RoleCard * Player::getRoleCard()
 {
 	return roleCard;
+}
+
+vector<string> * Player::getRoleDescription() {
+	return this->roleCard->getDescription();
 }
 
 void Player::refreshActions()

@@ -27,6 +27,9 @@ private:
 	Card * cardSelection(Player * player, string message);
 	void eventCardPrompt();
 	void playEventCardOrDiscard(Player * player);
+	void playRole();
+	void dispatcher();
+	Player * choseAPlayer();
 
 public:
 	Controller();
@@ -39,11 +42,11 @@ public:
 	void mapEditorCreateModifyDialog();
 	void mapEditorParametersDialog(string city);
 	void gameLoop();
-	void playerMove();
-	void driveFerry();
-	void directFlight();
-	void charterFlight();
-	void shuttleFlight();
+	void playerMove(Player * aPlayer);
+	void driveFerry(Player * aPlayer);
+	void directFlight(Player * aPlayer);
+	void charterFlight(Player * aPlayer);
+	void shuttleFlight(Player * aPlayer);
 	void buildResearchCenter();
 	void treatDisease();
 	void shareKnowledge();

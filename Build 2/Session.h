@@ -143,9 +143,9 @@ public:
 	unordered_map<string, Location*>* getLocation();
 	void incrementCurrentPlayer();
 
-	void move(City * city);
-	void move(CityCard * card);
-	void move(CityCard * card, City * city); 
+	void move(City * city, Player * aPlayer);
+	void move(CityCard * card, Player * aPlayer);
+	void move(CityCard * card, City * city, Player * aPlayer);
 	void build(CityCard * card, City * city);
 	void treatDisease(int type);
 	void shareKnowledge(CityCard * card, Player * player);

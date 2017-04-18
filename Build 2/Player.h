@@ -128,9 +128,9 @@ public:
 	void setLocation(City * city);
 
 	// The different actions the player can have. Will need to be implemented in a subsequent iteration.
-	string move(City * city); // Regular movement
-	string move(CityCard * card); // Move to city on card
-	string move(CityCard * card, City * city); // If card == current city, move to any city
+	string move(City * city, Player * aPlayer); // Regular movement
+	string move(CityCard * card, Player * aPlayer); // Move to city on card
+	string move(CityCard * card, City * city, Player * aPlayer); // If card == current city, move to any city
 	string build(CityCard * card, City * city); // Build center if hand has current city as card
 	string treatDisease(int type); 
 	string shareKnowledge(CityCard * card, Player * player);
@@ -158,6 +158,9 @@ public:
 	int getRole();
 
 	RoleCard * getRoleCard();
+
+	vector<string> * getRoleDescription();
+
 };
 
 

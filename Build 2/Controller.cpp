@@ -308,7 +308,7 @@ void Controller::gameLoop()
 	do {
 
 		while (currentPlayer->getActionPoints() != 0) {
-			playerMove();
+			playerMove(currentPlayer);
 		}
 		for (int i = 0; i < 2; ++i) {
 			// goes in a wrapper to display the card
@@ -346,7 +346,7 @@ void Controller::gameLoop()
 
 }
 
-void Controller::playerMove()
+void Controller::playerMove(Player * aPlayer)
 {
 	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	int verticalLines = display->mainScreen();
@@ -356,28 +356,32 @@ void Controller::playerMove()
 	verticalLines += ConsoleFormat::printLineOfText("2. Direct flight");
 	verticalLines += ConsoleFormat::printLineOfText("3. Charter flight");
 	verticalLines += ConsoleFormat::printLineOfText("4. Shuttle flight");
-	verticalLines += ConsoleFormat::printLineOfText("5. Build a research center");
-	verticalLines += ConsoleFormat::printLineOfText("6. Treat disease");
-	verticalLines += ConsoleFormat::printLineOfText("7. Share knowledge");
-	verticalLines += ConsoleFormat::printLineOfText("8. Discover cure");
-	verticalLines += ConsoleFormat::printLineOfText("9. Consult reference card");
-	verticalLines += ConsoleFormat::printLineOfText("10. Consult role card");
-	verticalLines += ConsoleFormat::printLineOfText("11. Play an event card");
-	verticalLines += ConsoleFormat::printLineOfText("12. Save the game");
+	int moveNum = 4;
+	if (aPlayer->getPlayerId() == currentPlayer->getPlayerId()) {// not a role play on another player
+		verticalLines += ConsoleFormat::printLineOfText("5. Build a research center");
+		verticalLines += ConsoleFormat::printLineOfText("6. Treat disease");
+		verticalLines += ConsoleFormat::printLineOfText("7. Share knowledge");
+		verticalLines += ConsoleFormat::printLineOfText("8. Discover cure");
+		verticalLines += ConsoleFormat::printLineOfText("9. Consult reference card");
+		verticalLines += ConsoleFormat::printLineOfText("10. Consult role card");
+		verticalLines += ConsoleFormat::printLineOfText("11. Play an event card");
+		verticalLines += ConsoleFormat::printLineOfText("12. Save the game");
+		moveNum = 12;
+	}
 	display->completeBottomWidget(verticalLines);
-
-	switch (inputCheck(1, 12)) {
+	
+	switch (inputCheck(1, moveNum)) {
 	case 1:
-		driveFerry();
+		driveFerry(aPlayer);
 		break;
 	case 2:
-		directFlight();
+		directFlight(aPlayer);
 		break;
 	case 3:
-		charterFlight();
+		charterFlight(aPlayer);
 		break;
 	case 4:
-		shuttleFlight();
+		shuttleFlight(aPlayer);
 		break;
 	case 5:
 		buildResearchCenter();
@@ -396,6 +400,7 @@ void Controller::playerMove()
 		break;
 	case 10:
 		Session::getInstance()->consultRoleCard();
+		playRole();
 		break;
 	case 11:
 		eventCardPrompt();
@@ -406,7 +411,7 @@ void Controller::playerMove()
 	}
 }
 
-void Controller::driveFerry()
+void Controller::driveFerry(Player * aPlayer)
 {
 	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	int verticalLines = display->mainScreen();
@@ -414,21 +419,21 @@ void Controller::driveFerry()
 	verticalLines += ConsoleFormat::printLineOfText("Where would you like to move?");
 	vector<City *> * listOfCities = new vector<City *>;
 	int iterationNumber = 1;
-	for (auto iterate = currentPlayer->getCity()->getConnections()->begin(); iterate != currentPlayer->getCity()->getConnections()->end(); ++iterate, ++iterationNumber) {
+	for (auto iterate = aPlayer->getCity()->getConnections()->begin(); iterate != aPlayer->getCity()->getConnections()->end(); ++iterate, ++iterationNumber) {
 		listOfCities->push_back(iterate->second);
 		verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + iterate->second->getName());
 	}
 	display->completeBottomWidget(verticalLines);
 	int userInput = inputCheck(1, listOfCities->size());
 
-	Session::getInstance()->move(listOfCities->at(userInput - 1));
+	Session::getInstance()->move(listOfCities->at(userInput - 1), aPlayer);
 
 	currentPlayer = nullptr;
 	delete listOfCities;
 	listOfCities = nullptr;
 }
 
-void Controller::directFlight()
+void Controller::directFlight(Player * aPlayer)
 {
 	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
 	bool handContainsCityCard;
@@ -456,7 +461,7 @@ void Controller::directFlight()
 		display->completeBottomWidget(verticalLines);
 		int userInput = inputCheck(1, listOfCards->size());
 
-		Session::getInstance()->move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)));
+		Session::getInstance()->move(dynamic_cast<CityCard*>(listOfCards->at(userInput - 1)), aPlayer);
 		delete listOfCards;
 		listOfCards = nullptr;
 	}
@@ -467,63 +472,77 @@ void Controller::directFlight()
 		verticalLines += ConsoleFormat::printEmptyLineWall();
 		display->completeBottomWidget(verticalLines);
 	}
-	
+
 	currentPlayer = nullptr;
 }
 
-void Controller::charterFlight()
+void Controller::charterFlight(Player * aPlayer)
 {
 	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
-	Card * card = Session::getInstance()->getCityCards(currentPlayer->getCity()->getName());
+	Card * card = Session::getInstance()->getCityCards(aPlayer->getCity()->getName());
+	
+
 	if (currentPlayer->getHand()->find(card) == currentPlayer->getHand()->end()) {
 		int verticalLines = display->mainScreen();
 		verticalLines += ConsoleFormat::printEmptyLineWall();
-		verticalLines += ConsoleFormat::printLineOfText(currentPlayer->getPlayerName() + " doesn't own the " + currentPlayer->getCity()->getName() + " card in his hand. Can't charter a flight.");
+		verticalLines += ConsoleFormat::printLineOfText(currentPlayer->getPlayerName() + " doesn't own the " + aPlayer->getCity()->getName() + " card in his hand. Can't charter a flight.");
 		verticalLines += ConsoleFormat::printEmptyLineWall();
 		display->completeBottomWidget(verticalLines);
 	}
 	else {
 		vector<City *> * listOfCities = new vector<City *>;
 		int userInput = display->cityChoice(currentPlayer, "Where would you like to charter a flight to?", listOfCities);
-		Session::getInstance()->move(dynamic_cast<CityCard *>(card), listOfCities->at(userInput));
+		Session::getInstance()->move(dynamic_cast<CityCard *>(card), listOfCities->at(userInput), aPlayer);
 
 
 		delete listOfCities;
 		listOfCities = nullptr;
-	}
+	}	
+
 	currentPlayer = nullptr;
 	card = nullptr;
-	
+
 }
 
-void Controller::shuttleFlight()
+void Controller::shuttleFlight(Player * aPlayer)
 {
 	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
-	if (currentPlayer->getCity()->getResearchCenter()) {
-		if (currentPlayer->getCity()->getResearchConnections()->size() > 0) {
-			int verticalLines = display->mainScreen();
+	if (aPlayer->getCity()->getResearchCenter() || currentPlayer->getPlayerId() != aPlayer->getPlayerId()) {
+
+		int verticalLines = display->mainScreen();
+		vector<City *> * listOfCities = new vector<City *>;
+		if (aPlayer->getCity()->getResearchConnections()->size() > 0 || currentPlayer->getPlayerId() != aPlayer->getPlayerId()) {
+			int iterationNumber = 1;
 			verticalLines += ConsoleFormat::printEmptyLineWall();
 			verticalLines += ConsoleFormat::printLineOfText("Where would you like to move?");
-			vector<City *> * listOfCities = new vector<City *>;
-			int iterationNumber = 1;
-			for (auto iterate = currentPlayer->getCity()->getResearchConnections()->begin(); iterate != currentPlayer->getCity()->getResearchConnections()->end(); ++iterate, ++iterationNumber) {
-				listOfCities->push_back(iterate->second);
-				verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + iterate->second->getName());
+			if (aPlayer->getCity()->getResearchConnections()->size() > 0){
+				
+				for (auto iterate = aPlayer->getCity()->getResearchConnections()->begin(); iterate != aPlayer->getCity()->getResearchConnections()->end(); ++iterate, ++iterationNumber) {
+					listOfCities->push_back(iterate->second);
+					verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + iterate->second->getName());
+				}
 			}
+			if (currentPlayer->getPlayerId() != aPlayer->getPlayerId()) {
+				for (auto iterate = Session::getInstance()->getPlayers()->begin(); iterate != Session::getInstance()->getPlayers()->end(); ++iterate, ++iterationNumber) {
+					listOfCities->push_back(Session::getInstance()->getPlayers()->at(iterationNumber - 1)->getCity());
+					verticalLines += ConsoleFormat::printLineOfText(to_string(iterationNumber) + ". " + listOfCities->at(iterationNumber - 1)->getLocation()->getName());
+				}
+			}
+
 			display->completeBottomWidget(verticalLines);
 			int userInput = inputCheck(1, listOfCities->size());
 
-			
-			Session::getInstance()->move(listOfCities->at(userInput - 1));
+
+			Session::getInstance()->move(listOfCities->at(userInput - 1), aPlayer);
 
 			delete listOfCities;
 			listOfCities = nullptr;
-		}	
+		}
 	}
 	else {
 		int verticalLines = display->mainScreen();
 		verticalLines += ConsoleFormat::printEmptyLineWall();
-		verticalLines += ConsoleFormat::printLineOfText(currentPlayer->getCity()->getName() + " doesn't contain a research center. Illegal move.");
+		verticalLines += ConsoleFormat::printLineOfText(aPlayer->getCity()->getName() + " doesn't contain a research center. Illegal move.");
 		verticalLines += ConsoleFormat::printEmptyLineWall();
 		display->completeBottomWidget(verticalLines);
 	}
@@ -1015,6 +1034,83 @@ void Controller::playEventCards()
 		forecast = nullptr;
 		return;
 	}
+}
+
+//This method allows a role to be played.
+void Controller::playRole()
+{
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
+	vector<Player *> * players = Session::getInstance()->getPlayers();
+	int verticalLines = display->mainScreen();
+	verticalLines += ConsoleFormat::printEmptyLineWall();
+
+	display->completeBottomWidget(verticalLines);
+	switch (currentPlayer->getRole()) {
+		;//playrole
+	case 1:
+
+		break;
+	case 2:
+
+		break;
+	case 3:
+		playerMove(choseAPlayer());
+		break;
+	case 4:
+
+		break;
+	case 5:
+
+		break;
+	case 6:
+
+		break;
+	case 7:
+
+		break;
+	}
+
+}
+
+void Controller::dispatcher() {
+
+}
+
+Player * Controller::choseAPlayer() {
+	Player * currentPlayer = Session::getInstance()->getPlayers()->at(Session::getInstance()->getCurrentPlayer());
+	vector<Player *> * players = Session::getInstance()->getPlayers();
+	int verticalLines = display->mainScreen();
+	verticalLines += ConsoleFormat::printEmptyLineWall();
+
+	Player * chosenPlayer;
+	bool consent = false;
+	bool wrongChoice = false;
+
+	for (int x = 1; x <= players->size(); ++x) {// chose anotherplayer to control
+		if (currentPlayer->getPlayerId() != players->at(x - 1)->getPlayerId()) {
+			verticalLines += ConsoleFormat::printLineOfText(to_string(x) + ". " + players->at(x - 1)->getPlayerName());
+		}
+	}
+	do {
+		verticalLines += ConsoleFormat::printLineOfText("Chose a player to control.");
+		int userInput = inputCheck(1, players->size());
+		chosenPlayer = players->at(userInput - 1);
+		if (currentPlayer->getPlayerId() == chosenPlayer->getPlayerId())
+			wrongChoice = true;
+		verticalLines += ConsoleFormat::printLineOfText("Does player " + chosenPlayer->getPlayerName() + " consent?");
+		verticalLines += ConsoleFormat::printEmptyLineWall();
+		verticalLines += ConsoleFormat::printLineOfText("1. yes");
+		verticalLines += ConsoleFormat::printLineOfText("2. no");
+		userInput = inputCheck(1, 2);
+		if (userInput == 1)
+			consent = true;
+	} while (!consent || wrongChoice);
+	//delete  players;
+	//delete currentPlayer;
+	//currentPlayer = nullptr;
+	//players = nullptr;
+	return chosenPlayer;
+
 }
 
 void Controller::handSizeCheck(Player * player) {

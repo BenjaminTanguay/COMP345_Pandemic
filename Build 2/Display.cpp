@@ -35,6 +35,7 @@ Display::Display()
 	gameStatus[3] = "Next infection increase";
 	gameStatus[4] = "Outbreaks left before loss";
 	gameStatus[5] = "Cards left in the deck";
+	gameStatus[6] = "Research Centers";
 	gameStatus[0] = "";
 
 }
@@ -305,7 +306,7 @@ int Display::topWidget() {
 
 	//setw(separation);
 	int lineLength = 0;
-	for (int i = 0; i < 11; ++i) {
+	for (int i = 0; i < 12; ++i) {
 		lineLength = ConsoleFormat::printWall();
 		ConsoleFormat::setColor(lgrey, black);
 
@@ -351,7 +352,7 @@ int Display::topWidget() {
 			}
 		}
 		
-		if (i > 5) {
+		if (i > 6) {
 			lineLength += ConsoleFormat::makeBox(23, "");
 		}
 		else {
@@ -373,11 +374,14 @@ int Display::topWidget() {
 		case 4:
 			data = to_string(Session::getInstance()->getPlayerDeck()->getSize());
 			break;
+		case 5:
+			data = to_string(GameStateVar::getInstance()->getResearchCenterCounter());
+			break;
 		default:
 			data = "";
 		}
 
-		if (i > 5) {
+		if (i > 6) {
 			lineLength += ConsoleFormat::makeBox(29, "");
 		}
 		else {
