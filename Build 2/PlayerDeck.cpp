@@ -75,7 +75,7 @@ void PlayerDeck::shuffleEpidemic(int numberOfEpidemicCards)
 	for (int i = 0; i < numberOfEpidemicCards; ++i) {
 		this->deck->insert(this->deck->begin() + lastLoop, new EpidemicCard());
 		std::mt19937 randomSeed{ std::random_device{}() };
-		if (i = numberOfEpidemicCards - 1) {
+		if (i == numberOfEpidemicCards - 1) {
 			shuffle(this->deck->begin() + lastLoop, this->deck->end(), randomSeed);
 		}
 		else {
